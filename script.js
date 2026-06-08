@@ -663,6 +663,8 @@ const ZH = {
   'All Statuses': '所有狀態',
   'Date Arrived · Newest': '到達日期 · 最新',
   'Date Arrived · Oldest': '到達日期 · 最舊',
+  'Newest': '最新',
+  'Oldest': '最舊',
   'No orders match': '沒有符合的訂單',
   'Try a different search or status.': '請嘗試其他搜尋或狀態。',
   'item': '件',
@@ -770,6 +772,12 @@ const ZH = {
   '1d ago': '1 日前',
   '3d ago': '3 日前',
   '5d ago': '5 日前',
+  // —— notification settings ——
+  'Push notifications': '推送通知',
+  'Allow HobbyX to send alerts to this device': '允許 HobbyX 向此裝置傳送通知',
+  'Notification language': '通知語言',
+  'Language used in your notifications': '通知所使用的語言',
+  'You can change these anytime. Critical account and security alerts are always sent.': '你可隨時更改這些設定。重要的帳戶及安全通知仍會照常傳送。',
   // —— auth UX: validation / password / phone ——
   'Demo login': '示範登入',
   'Only numbers are allowed.': '只允許輸入數字。',
@@ -812,6 +820,7 @@ const ZH = {
   'You’re offline — showing your last saved data': '你目前離線 — 正顯示上次儲存的資料',
   'Try a different search term or status filter.': '請嘗試其他搜尋字詞或狀態篩選。',
   'Clear filters': '清除篩選',
+  'Clear all filters': '清除所有篩選',
   'No completed orders yet': '尚未有已完成的訂單',
   'No orders in progress': '沒有處理中的訂單',
   'Graded orders you receive back will appear here.': '你收回的已評級訂單會在此顯示。',
@@ -2229,7 +2238,7 @@ function Menu({
     key: it.key,
     onClick: () => onPick(it.key),
     className: "flex w-full items-center justify-between rounded-sm px-2 py-2 text-sm font-medium text-popover-foreground hover:bg-accent"
-  }, it.label, current === it.key && /*#__PURE__*/React.createElement("span", {
+  }, tx(it.label), current === it.key && /*#__PURE__*/React.createElement("span", {
     className: "h-4 w-4 text-primary"
   }, Icon.check))));
 }
@@ -3336,8 +3345,21 @@ function NotifLangToggle({
 function NotificationSettingsScreen({
   goBack
 }) {
+  useLang();
   const [push, setPush] = useStateG(true);
-  const [lang, setLang] = useStateG('en');
+  const [notifLang, setNotifLang] = useStateG(() => {
+    try {
+      return localStorage.getItem('hobbyx_notif_lang') || window.__lang || 'en';
+    } catch (e) {
+      return window.__lang || 'en';
+    }
+  });
+  const saveNotifLang = l => {
+    setNotifLang(l);
+    try {
+      localStorage.setItem('hobbyx_notif_lang', l);
+    } catch (e) {}
+  };
   return /*#__PURE__*/React.createElement("div", {
     className: "flex h-full flex-col bg-background"
   }, /*#__PURE__*/React.createElement(AppBar, {
@@ -3377,8 +3399,8 @@ function NotificationSettingsScreen({
   }, tx('Notification language')), /*#__PURE__*/React.createElement("div", {
     className: "mt-0.5 text-[12px] font-medium leading-snug text-muted-foreground"
   }, tx('Language used in your notifications'))), /*#__PURE__*/React.createElement(NotifLangToggle, {
-    value: lang,
-    onChange: setLang
+    value: notifLang,
+    onChange: saveNotifLang
   })))), /*#__PURE__*/React.createElement("p", {
     className: "mt-5 px-1 text-[12px] font-medium leading-relaxed text-muted-foreground"
   }, tx('You can change these anytime. Critical account and security alerts are always sent.'))));
