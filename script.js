@@ -1621,10 +1621,6 @@ function CardBack({
   });
 }
 
-function gradeCondition(sub) {
-  return (sub || '').replace(/\s*[\d.]+$/, '').trim();
-}
-
 /* Slab — PSA-style graded holder. face: 'front' (label + card) or 'back' (cert holo + back). */
 function Slab({
   item,
@@ -1635,7 +1631,7 @@ function Slab({
   style = null
 }) {
   const num = (item.grade || '').replace(/PSA\s*/i, '').trim();
-  const word = gradeCondition(item.sub);
+  const word = (item.sub || '').replace(/\s*[\d.]+$/, '').trim();
   const L = item.lbl || {};
   const caseStyle = {
     borderRadius: radius,
@@ -2639,7 +2635,7 @@ function ItemsScreen({
     className: "mt-1 text-sm font-bold text-foreground"
   }, it.grade, " ", /*#__PURE__*/React.createElement("span", {
     className: "font-semibold text-muted-foreground"
-  }, "\xB7 ", gradeCondition(it.sub))) : /*#__PURE__*/React.createElement(Badge, {
+  }, "\xB7 ", it.sub)) : /*#__PURE__*/React.createElement(Badge, {
     intent: "neutral",
     className: "mt-1.5"
   }, tx(order.group === 'completed' ? 'Shipping to you' : 'In grading'))), /*#__PURE__*/React.createElement("span", {
@@ -2723,7 +2719,7 @@ function CardDetail({
     className: "text-2xl font-extrabold text-foreground"
   }, item.grade), /*#__PURE__*/React.createElement("div", {
     className: "text-sm font-semibold text-muted-foreground"
-  }, gradeCondition(item.sub))))));
+  }, item.sub)))));
 }
 
 /* ---------- GRADE REVEAL ---------- */
@@ -2739,6 +2735,7 @@ function GradeReveal({
   const timers = React.useRef([]);
   const sparkRef = React.useRef(null);
   const openedRef = React.useRef(false);
+  const rootRef = React.useRef(null);
   const clearTimers = () => {
     timers.current.forEach(clearTimeout);
     timers.current = [];
@@ -2803,6 +2800,70 @@ function GradeReveal({
     startTimeline();
     return clearTimers;
   }, [show, idx]);
+  // 3D tilt — the scene leans with the phone's tilt (or pointer on desktop).
+  React.useEffect(() => {
+    if (!show) return undefined;
+    if (typeof window === 'undefined') return undefined;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const el = rootRef.current;
+    if (!el) return undefined;
+    const MAX_X = 6, MAX_Y = 8;
+    let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0;
+    const tick = () => {
+      raf = 0;
+      cx += (tx - cx) * 0.16;
+      cy += (ty - cy) * 0.16;
+      el.style.setProperty('--gr-tx', cx.toFixed(2) + 'deg');
+      el.style.setProperty('--gr-ty', cy.toFixed(2) + 'deg');
+      el.style.setProperty('--gr-shine-x', (cx * 2.6).toFixed(1) + 'px');
+      el.style.setProperty('--gr-shine-y', (cy * 2.6).toFixed(1) + 'px');
+      if (Math.abs(tx - cx) > 0.04 || Math.abs(ty - cy) > 0.04) raf = requestAnimationFrame(tick);
+    };
+    const schedule = () => {if (!raf) raf = requestAnimationFrame(tick);};
+    const clamp = (v, m) => v < -m ? -m : v > m ? m : v;
+    const onOrient = (e) => {
+      if (e.gamma == null || e.beta == null) return;
+      const g = clamp(e.gamma, 24);
+      const b = clamp(e.beta - 40, 24);
+      tx = g / 24 * MAX_Y;
+      ty = -(b / 24) * MAX_X;
+      schedule();
+    };
+    const onPointer = (e) => {
+      const r = el.getBoundingClientRect();
+      tx = ((e.clientX - r.left) / r.width - 0.5) * 2 * MAX_Y;
+      ty = -((e.clientY - r.top) / r.height - 0.5) * 2 * MAX_X;
+      schedule();
+    };
+    const onLeave = () => {tx = 0;ty = 0;schedule();};
+    window.addEventListener('pointermove', onPointer, { passive: true });
+    el.addEventListener('pointerleave', onLeave);
+    let orientBound = false;
+    const bindOrient = () => {
+      if (orientBound) return;
+      orientBound = true;
+      window.addEventListener('deviceorientation', onOrient, { passive: true });
+    };
+    const DOE = window.DeviceOrientationEvent;
+    let askOnTap = null;
+    if (DOE && typeof DOE.requestPermission === 'function') {
+      askOnTap = () => {DOE.requestPermission().then((s) => {if (s === 'granted') bindOrient();}).catch(() => {});};
+      window.addEventListener('pointerdown', askOnTap, { once: true });
+    } else if (DOE) {
+      bindOrient();
+    }
+    return () => {
+      window.removeEventListener('pointermove', onPointer);
+      window.removeEventListener('deviceorientation', onOrient);
+      if (askOnTap) window.removeEventListener('pointerdown', askOnTap);
+      el.removeEventListener('pointerleave', onLeave);
+      if (raf) cancelAnimationFrame(raf);
+      el.style.removeProperty('--gr-tx');
+      el.style.removeProperty('--gr-ty');
+      el.style.removeProperty('--gr-shine-x');
+      el.style.removeProperty('--gr-shine-y');
+    };
+  }, [show]);
   if (!show) return null;
   if (graded.length === 0) {
     return /*#__PURE__*/React.createElement("div", {
@@ -2844,7 +2905,8 @@ function GradeReveal({
   const HX_LOGO = typeof window !== 'undefined' && window.__resources && window.__resources.hobbyxLogo || 'assets/hobbyx-logo.png';
   return /*#__PURE__*/React.createElement("div", {
     className: "gr",
-    "data-phase": phase
+    "data-phase": phase,
+    ref: rootRef
   }, /*#__PURE__*/React.createElement("div", {
     className: "gr-vignette"
   }), /*#__PURE__*/React.createElement("div", {
@@ -2881,6 +2943,8 @@ function GradeReveal({
   }, /*#__PURE__*/React.createElement("div", {
     className: "gr-slab-bob"
   }, /*#__PURE__*/React.createElement("div", {
+    className: "gr-slab-tilt"
+  }, /*#__PURE__*/React.createElement("div", {
     className: "gr-slab-flip"
   }, /*#__PURE__*/React.createElement("div", {
     className: "gr-face gr-face-front"
@@ -2889,16 +2953,24 @@ function GradeReveal({
     big: true,
     face: "front",
     className: "h-full w-full",
-    radius: 11
+    radius: 0
   }), /*#__PURE__*/React.createElement("div", {
-    className: "gr-slab-holo"
+    className: "gr-gloss"
   })), /*#__PURE__*/React.createElement("div", {
     className: "gr-face gr-face-back"
   }, /*#__PURE__*/React.createElement(Slab, {
     item: item,
     face: "back",
     className: "h-full w-full",
-    radius: 11
+    radius: 0
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "gr-edge gr-edge-right"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "gr-edge gr-edge-left"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "gr-edge gr-edge-bottom"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "gr-edge gr-edge-top"
   })))))), /*#__PURE__*/React.createElement("div", {
     className: "gr-pack"
   }, /*#__PURE__*/React.createElement("div", {
@@ -2951,7 +3023,7 @@ function GradeReveal({
     className: "gr-grade"
   }, num)), /*#__PURE__*/React.createElement("div", {
     className: "gr-sub"
-  }, gradeCondition(item.sub)), /*#__PURE__*/React.createElement("div", {
+  }, item.sub), /*#__PURE__*/React.createElement("div", {
     className: "gr-name"
   }, tx(item.name)), /*#__PURE__*/React.createElement("button", {
     className: "gr-cta",

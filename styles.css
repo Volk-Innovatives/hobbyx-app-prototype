@@ -449,6 +449,16 @@ img, video { max-width: 100%; height: auto; }
    All timing is driven by data-phase on .gr (set from JS).
    ======================================================================= */
 
+/* Notification → list: subtle orange glow on the destination card */
+@keyframes notifCardGlow{
+  0%{   box-shadow:0 0 0 0 hsl(var(--primary)/0); border-color:hsl(var(--border)); }
+  12%{  box-shadow:0 0 0 3px hsl(var(--primary)/.20), 0 6px 22px 0 hsl(var(--primary)/.34); border-color:hsl(var(--primary)/.65); }
+  55%{  box-shadow:0 0 0 3px hsl(var(--primary)/.14), 0 6px 18px 0 hsl(var(--primary)/.22); border-color:hsl(var(--primary)/.5); }
+  100%{ box-shadow:0 0 0 0 hsl(var(--primary)/0); border-color:hsl(var(--border)); }
+}
+.notif-glow{ animation:notifCardGlow 2.8s cubic-bezier(.4,0,.2,1) both; }
+@media (prefers-reduced-motion:reduce){ .notif-glow{ animation:none; box-shadow:0 0 0 2px hsl(var(--primary)/.4); } }
+
 .gr{
   position:absolute; inset:0; z-index:40; overflow:hidden;
   display:flex; flex-direction:column;
@@ -482,14 +492,20 @@ img, video { max-width: 100%; height: auto; }
 .gr-top-actions{ display:flex; justify-content:flex-end; }
 
 /* ---- the stage that holds pack + card, vertically centered ---- */
-.gr-stage{ position:relative; flex:1; display:flex; align-items:center; justify-content:center; }
-.gr-scene{ position:relative; width:248px; height:392px; }
+.gr-stage{ position:relative; flex:1; display:flex; align-items:center; justify-content:center;
+  perspective:1100px; perspective-origin:50% 44%; }
+/* whole scene tilts in 3D from device-orientation / pointer (vars set on .gr in JS) */
+.gr-scene{ position:relative; width:248px; height:392px;
+  transform-style:preserve-3d;
+  transform:rotateX(var(--gr-ty,0deg)) rotateY(var(--gr-tx,0deg));
+  transition:transform .12s ease-out; will-change:transform; }
+@media (prefers-reduced-motion:reduce){ .gr-scene{ transform:none; } }
 
 /* =======================================================================
    PACKET
    ======================================================================= */
 .gr-pack{
-  position:absolute; left:50%; bottom:6px; width:238px; height:360px;
+  position:absolute; left:50%; bottom:2px; width:272px; height:414px;
   transform:translate(-50%, 150%);
   will-change:transform; z-index:10;
 }
@@ -514,49 +530,29 @@ img, video { max-width: 100%; height: auto; }
   transition:transform .8s cubic-bezier(.5,0,.75,0), opacity .8s ease .1s;
 }
 
-/* --- pack body (the orange foil front) --- */
+/* --- pack body: client's experimental silver foil pouch (placeholder art).
+   We use the photo's OWN crimp (authentic) and "cut" it by clipping the top
+   on open — no separate CSS crimp strip, so nothing can mis-align. --- */
 .gr-body{
-  position:absolute; inset:0; border-radius:16px; overflow:hidden;
-  background:
-    linear-gradient(150deg, #ff8a2b 0%, #ff6400 30%, #e84e00 62%, #ff7a1c 100%);
-  box-shadow:
-    inset 0 0 0 1.5px rgba(255,210,150,.55),
-    inset 0 14px 30px rgba(255,225,180,.30),
-    inset 0 -40px 60px rgba(120,40,0,.55),
-    0 30px 60px rgba(0,0,0,.55),
-    0 0 0 1px rgba(0,0,0,.25);
-  z-index:6;
+  position:absolute; inset:0; z-index:6;
+  background:url(assets/reveal-packet-v2.png) center/100% 100% no-repeat;
+  /* shadow follows the pouch silhouette (alpha), not a rectangle */
+  filter:drop-shadow(0 26px 32px rgba(0,0,0,.62));
+  -webkit-clip-path:inset(0 0 0 0);
+          clip-path:inset(0 0 0 0);
+  transition:-webkit-clip-path .34s cubic-bezier(.4,0,.3,1), clip-path .34s cubic-bezier(.4,0,.3,1);
 }
-/* foil weave texture */
-.gr-body::before{
-  content:""; position:absolute; inset:0; opacity:.5; mix-blend-mode:overlay;
-  background:
-    repeating-linear-gradient(58deg, rgba(255,255,255,.16) 0 2px, transparent 2px 7px),
-    repeating-linear-gradient(-58deg, rgba(0,0,0,.10) 0 2px, transparent 2px 9px);
-}
-/* metallic vertical banding */
-.gr-body::after{
-  content:""; position:absolute; inset:0; opacity:.45; mix-blend-mode:screen;
-  background:linear-gradient(100deg,
-    transparent 0%, rgba(255,240,210,.0) 30%,
-    rgba(255,248,225,.55) 46%, rgba(255,255,255,.85) 50%,
-    rgba(255,248,225,.55) 54%, transparent 70%);
-  transform:translateX(-30%);
-}
-/* sweeping foil sheen (loops only while ready) */
-.gr-sheen{
-  position:absolute; inset:-20% -40%; z-index:7; pointer-events:none;
-  background:linear-gradient(105deg,
-    transparent 38%, rgba(255,255,255,.0) 44%,
-    rgba(255,255,255,.55) 50%, rgba(255,255,255,.0) 56%, transparent 62%);
-  transform:translateX(-60%);
-}
-.gr[data-phase="ready"] .gr-sheen{ animation:gr-sheen 2.4s ease-in-out .3s infinite; }
-@keyframes gr-sheen{ 0%{ transform:translateX(-65%);} 55%,100%{ transform:translateX(65%);} }
+.gr-body::before, .gr-body::after{ content:none; }
+/* the cut: slice the crimped top off once opened */
+.gr[data-phase="open"] .gr-body,
+.gr[data-phase="emerge"] .gr-body,
+.gr[data-phase="flip"] .gr-body,
+.gr[data-phase="reveal"] .gr-body{ -webkit-clip-path:inset(8% 0 0 0); clip-path:inset(8% 0 0 0); }
+.gr-sheen{ display:none; }
 
-/* logo + lockup on the pack front */
-.gr-brand{
-  position:absolute; inset:0; z-index:9; display:flex; flex-direction:column;
+/* brand lockup hidden — the placeholder pouch is blank; final art arrives later */
+.gr-brand{ display:none;
+  position:absolute; inset:0; z-index:9; flex-direction:column;
   align-items:center; justify-content:center; gap:16px; padding:24px;
   text-align:center;
 }
@@ -578,15 +574,16 @@ img, video { max-width: 100%; height: auto; }
 .gr[data-phase="flip"] .gr-brand,
 .gr[data-phase="reveal"] .gr-brand{ opacity:0; transition:opacity .45s ease; }
 
-/* --- crimp (the serrated top strip that gets sliced off) --- */
+/* --- crimp: the photo already has its own crimp, so the CSS strip is disabled.
+   The top is "cut" by clipping .gr-body (see above). --- */
 .gr-crimp{
-  position:absolute; left:0; right:0; top:-2px; height:34px; z-index:12;
+  position:absolute; left:0; right:0; top:-2px; height:34px; z-index:12; display:none;
   transform-origin:50% 100%;
 }
 .gr-crimp-foil{
-  position:absolute; inset:0; border-radius:16px 16px 4px 4px;
-  background:linear-gradient(150deg, #ff8a2b, #ff6400 60%, #e84e00);
-  box-shadow:inset 0 0 0 1.5px rgba(255,210,150,.55), inset 0 6px 14px rgba(255,225,180,.3);
+  position:absolute; inset:0; border-radius:6px 6px 3px 3px;
+  background:linear-gradient(150deg, #fbfcfe 0%, #d3d9e0 48%, #aab2bd 100%);
+  box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.7), inset 0 6px 14px rgba(255,255,255,.4);
   /* zig-zag bottom edge = tear serration */
   -webkit-mask:
     linear-gradient(#000 0 0) top/100% 22px no-repeat,
@@ -595,10 +592,9 @@ img, video { max-width: 100%; height: auto; }
     linear-gradient(#000 0 0) top/100% 22px no-repeat,
     repeating-linear-gradient(90deg,#000 0 5px, transparent 5px 6px) bottom/100% 12px;
 }
-.gr-crimp-stamp{
+.gr-crimp-stamp{ display:none;
   position:absolute; left:0; right:0; top:5px; text-align:center;
   font-size:10px; font-weight:900; letter-spacing:.42em; text-indent:.42em;
-  color:rgba(255,255,255,.9); text-shadow:0 1px 2px rgba(120,40,0,.5);
 }
 /* after the cut, the crimp flips up & tumbles away */
 .gr[data-phase="open"] .gr-crimp,
@@ -650,7 +646,7 @@ img, video { max-width: 100%; height: auto; }
 }
 /* the bright cut glint that races across the foil */
 .gr-glint{
-  position:absolute; top:0; left:0; z-index:19; width:54px; height:54px;
+  position:absolute; top:0; left:0; z-index:19; width:42px; height:42px;
   pointer-events:none; opacity:0;
   background:
     radial-gradient(closest-side, rgba(255,255,255,1), rgba(255,220,150,.7) 38%, transparent 72%);
@@ -734,19 +730,48 @@ img, video { max-width: 100%; height: auto; }
    ======================================================================= */
 .gr-slab{
   position:absolute; left:50%; top:34px; z-index:5; width:208px;
+  --gr-T:20px;        /* real plastic-case thickness */
+  --gr-hw:104px;      /* half width  (208 / 2) */
+  --gr-hh:173.3px;    /* half height (208 / .6 / 2) */
   transform:translate(-50%, 0) scale(.96);
-  filter:drop-shadow(0 18px 26px rgba(0,0,0,.5));
-  perspective:1500px; will-change:transform;
+  filter:drop-shadow(0 22px 30px rgba(0,0,0,.55));
+  perspective:1000px; perspective-origin:50% 44%; will-change:transform;
 }
+/* every link in the chain must keep 3D so the box never flattens */
+.gr-slab-rise,.gr-slab-bob,.gr-slab-tilt{ transform-style:preserve-3d; }
 .gr-slab-bob{ position:relative; width:100%; }
+/* the slab leans with the phone's tilt so its real edges catch the light */
+/* the slab rests at a slight product angle (right + bottom edges catching light)
+   and leans further with the phone's tilt so the real thickness stays visible */
+.gr-slab-tilt{
+  transform:rotateX(calc(8deg + var(--gr-ty,0deg) * 1.4)) rotateY(calc(13deg + var(--gr-tx,0deg) * 1.6));
+  transition:transform .12s ease-out;
+}
 .gr-slab-flip{
   position:relative; width:100%; aspect-ratio:.6;
-  transform-style:preserve-3d; transform:rotateY(180deg); /* back face out while emerging */
+  transform-style:preserve-3d; transform:rotateY(0deg);
 }
+/* the two broad faces, pushed to the front & back of the slab's depth */
 .gr-face{ position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden;
-  border-radius:11px; overflow:hidden; }
-.gr-face-front{ transform:rotateY(0deg); }
-.gr-face-back{ transform:rotateY(180deg); }
+  border-radius:0; overflow:hidden; }
+.gr-face-front{ transform:translateZ(calc(var(--gr-T) / 2)); }
+.gr-face-back{ transform:rotateY(180deg) translateZ(calc(var(--gr-T) / 2)); }
+/* ---- the slab EDGES: separate extruded surfaces, a shade darker than the face ---- */
+.gr-edge{ position:absolute; }
+.gr-edge-right,.gr-edge-left{
+  top:0; height:100%; left:50%; width:var(--gr-T); margin-left:calc(var(--gr-T) / -2);
+  background:linear-gradient(180deg,#9a9ea7 0%,#6c707a 26%,#474b54 64%,#2c2f37 100%);
+  box-shadow:inset 1px 0 0 rgba(255,255,255,.22), inset -1px 0 0 rgba(0,0,0,.4);
+}
+.gr-edge-right{ transform:rotateY(90deg)  translateZ(var(--gr-hw)); }
+.gr-edge-left { transform:rotateY(-90deg) translateZ(var(--gr-hw)); }
+.gr-edge-top,.gr-edge-bottom{
+  left:0; width:100%; top:50%; height:var(--gr-T); margin-top:calc(var(--gr-T) / -2);
+  background:linear-gradient(90deg,#969aa3 0%,#6c707a 32%,#43464f 72%,#282b32 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.2), inset 0 -1px 0 rgba(0,0,0,.4);
+}
+.gr-edge-bottom{ transform:rotateX(-90deg) translateZ(var(--gr-hh)); }
+.gr-edge-top   { transform:rotateX(90deg)  translateZ(var(--gr-hh)); }
 
 /* INSIDE: fully hidden within the pack — stays invisible until the cut.
    (z-index alone isn't enough: while the pack is still rising up it doesn't
@@ -762,11 +787,10 @@ img, video { max-width: 100%; height: auto; }
   transform:translate(-50%, -62px) scale(.99);
   transition:transform .9s cubic-bezier(.2,.84,.3,1), opacity .22s ease;
 }
-.gr[data-phase="emerge"] .gr-slab-flip{ transform:rotateY(180deg); }
-/* FLIP: pack has dropped, card is free → lifts & scales up (still back-facing) */
+/* FLIP: pack has dropped, card is free → lifts, scales up, turns to show its back */
 .gr[data-phase="flip"] .gr-slab{
   z-index:16;
-  transform:translate(-50%, -120px) scale(1.04);
+  transform:translate(-50%, -120px) translateZ(34px) scale(1.04);
   transition:transform 1s cubic-bezier(.2,.8,.2,1);
 }
 .gr[data-phase="flip"] .gr-slab-flip{
@@ -776,7 +800,7 @@ img, video { max-width: 100%; height: auto; }
 /* REVEAL: hero, front-facing, gentle float */
 .gr[data-phase="reveal"] .gr-slab{
   z-index:16;
-  transform:translate(-50%, -128px) scale(1.06);
+  transform:translate(-50%, -128px) translateZ(48px) scale(1.06);
   transition:transform .85s cubic-bezier(.2,.8,.2,1);
   filter:drop-shadow(0 30px 46px rgba(0,0,0,.62)) drop-shadow(0 0 42px rgba(255,180,90,.42));
 }
@@ -795,7 +819,6 @@ img, video { max-width: 100%; height: auto; }
   opacity:0;
   transition:transform .52s cubic-bezier(.4,0,.55,1), opacity .42s ease .04s;
 }
-.gr[data-phase="exit"] .gr-slab-flip{ transform:rotateY(360deg); }
 .gr[data-phase="exit"] .gr-info{
   opacity:0; transform:translateY(8px);
   transition:opacity .3s ease, transform .34s cubic-bezier(.4,0,.55,1);
@@ -805,18 +828,27 @@ img, video { max-width: 100%; height: auto; }
   0%,100%{ transform:translateY(0); }
   50%{ transform:translateY(-11px); }
 }
-/* a holo sheen sweeping the front face on reveal */
-.gr-slab-holo{
-  position:absolute; inset:0; z-index:2; pointer-events:none; border-radius:11px; overflow:hidden; opacity:0;
+/* a soft, blurred, angled specular highlight — NO hard rectangle. The blob
+   drifts with the tilt so the slab reads as a real glossy plastic surface. */
+.gr-gloss{
+  position:absolute; inset:0; z-index:3; pointer-events:none; overflow:hidden;
+  border-radius:0; opacity:0; transition:opacity .5s ease;
 }
-.gr-slab-holo::before{
-  content:""; position:absolute; inset:-30%;
-  background:linear-gradient(115deg, transparent 40%, rgba(255,255,255,.55) 50%, transparent 60%);
-  transform:translateX(-70%);
+.gr-gloss::before{
+  content:""; position:absolute; left:-25%; top:-35%; width:150%; height:125%;
+  background:
+    radial-gradient(54% 42% at 34% 24%, rgba(255,255,255,.55), rgba(255,255,255,.16) 46%, transparent 72%),
+    radial-gradient(44% 30% at 74% 82%, rgba(255,255,255,.26), transparent 70%);
+  transform:rotate(-20deg) translate(calc(var(--gr-shine-x,0px) * 1.7), calc(var(--gr-shine-y,0px) * 1.7));
+  filter:blur(17px); mix-blend-mode:screen;
 }
-.gr[data-phase="reveal"] .gr-slab-holo{ opacity:1; }
-.gr[data-phase="reveal"] .gr-slab-holo::before{ animation:gr-holo 2.8s ease-in-out 1.2s infinite; }
-@keyframes gr-holo{ 0%{ transform:translateX(-70%);} 60%,100%{ transform:translateX(70%);} }
+/* glassy top-edge sheen + soft lower shading = subtle gloss, not over-realistic */
+.gr-gloss::after{
+  content:""; position:absolute; inset:0; mix-blend-mode:soft-light;
+  background:linear-gradient(180deg, rgba(255,255,255,.42) 0%, transparent 12%, transparent 86%, rgba(0,0,0,.3) 100%);
+}
+.gr[data-phase="flip"] .gr-gloss,
+.gr[data-phase="reveal"] .gr-gloss{ opacity:1; }
 
 /* =======================================================================
    SPARKLE PARTICLES (spawned in JS as .gr-spark with --tx/--ty/--d/--s)
@@ -896,7 +928,7 @@ img, video { max-width: 100%; height: auto; }
 /* reduced motion: skip straight to revealed state */
 @media (prefers-reduced-motion: reduce){
   .gr-pack, .gr-crimp, .gr-blade, .gr-glint, .gr-burst, .gr-rays, .gr-sheen,
-  .gr-slab, .gr-slab-holo::before, .gr-spark, .gr-info, .gr-grade, .gr-flash{
+  .gr-slab, .gr-gloss::before, .gr-spark, .gr-info, .gr-grade, .gr-flash{
     animation:none !important; transition:none !important;
   }
 }
