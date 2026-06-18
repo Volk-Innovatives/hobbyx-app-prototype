@@ -1,4 +1,5 @@
-/* HobbyX — precompiled bundle (no Babel at runtime) */
+/* HobbyX — precompiled static build (no Babel/CDN at runtime) — faithful 1:1 of HobbyX App.html */
+
 
 /* ===== app2/data.jsx ===== */
 /* HobbyX — unified data model (shadcn rebuild)
@@ -35,8 +36,8 @@ const PIPELINE = [{
   desc: 'Your order has been completed. You\u2019ll receive an email when cards are ready for pickup at HobbyX Store.'
 }, {
   key: 'complete',
-  label: 'Complete',
-  desc: 'Your order is complete and on its way to you.'
+  label: 'Ready for Pickup',
+  desc: 'Your order is complete and ready for pickup at HobbyX Store.'
 }];
 const STEP_INDEX = Object.fromEntries(PIPELINE.map((s, i) => [s.key, i]));
 function progressFor(key) {
@@ -663,8 +664,6 @@ const ZH = {
   'All Statuses': '所有狀態',
   'Date Arrived · Newest': '到達日期 · 最新',
   'Date Arrived · Oldest': '到達日期 · 最舊',
-  'Newest': '最新',
-  'Oldest': '最舊',
   'No orders match': '沒有符合的訂單',
   'Try a different search or status.': '請嘗試其他搜尋或狀態。',
   'item': '件',
@@ -718,6 +717,7 @@ const ZH = {
   'Grades Ready': '評級完成',
   'Completing': '完成中',
   'Complete': '已完成',
+  'Ready for Pickup': '可取貨',
   'On track for est. completion': '按預計完成日期進行中',
   'On track for estimated completion': '按預計完成日期進行中',
   'Est. Shipment': '預計寄送',
@@ -772,12 +772,6 @@ const ZH = {
   '1d ago': '1 日前',
   '3d ago': '3 日前',
   '5d ago': '5 日前',
-  // —— notification settings ——
-  'Push notifications': '推送通知',
-  'Allow HobbyX to send alerts to this device': '允許 HobbyX 向此裝置傳送通知',
-  'Notification language': '通知語言',
-  'Language used in your notifications': '通知所使用的語言',
-  'You can change these anytime. Critical account and security alerts are always sent.': '你可隨時更改這些設定。重要的帳戶及安全通知仍會照常傳送。',
   // —— auth UX: validation / password / phone ——
   'Demo login': '示範登入',
   'Only numbers are allowed.': '只允許輸入數字。',
@@ -820,7 +814,6 @@ const ZH = {
   'You’re offline — showing your last saved data': '你目前離線 — 正顯示上次儲存的資料',
   'Try a different search term or status filter.': '請嘗試其他搜尋字詞或狀態篩選。',
   'Clear filters': '清除篩選',
-  'Clear all filters': '清除所有篩選',
   'No completed orders yet': '尚未有已完成的訂單',
   'No orders in progress': '沒有處理中的訂單',
   'Graded orders you receive back will appear here.': '你收回的已評級訂單會在此顯示。',
@@ -909,8 +902,8 @@ function setLang(l) {
   langSubs.forEach(fn => fn());
 }
 function tx(s) {
-  if (window.__lang !== 'zh' || s == null) return s;
-  return ZH[s] || s;
+  if (!window.__lang || window.__lang === 'en' || s == null) return s;
+  return ZH[s] || s; // any zh-* variant maps to the Traditional Chinese dictionary
 }
 function useLang() {
   const [, force] = useI18nState(0);
@@ -922,18 +915,36 @@ function useLang() {
   return [window.__lang, setLang];
 }
 
-/* compact EN / 中文 segmented toggle */
+/* full language picker — English + every supported Chinese variant */
+const LANGS = [['en', 'English'], ['zh-HK', '繁中·香港'], ['zh-TW', '繁中·台灣'], ['zh-MO', '繁中·澳門'], ['zh-CN', '简中·大陆'], ['zh-SG', '简中·新加坡']];
 function LangToggle({
   className = ''
 }) {
   const [lang, set] = useLang();
+  const val = lang === 'zh' ? 'zh-HK' : lang; // migrate legacy value
   return /*#__PURE__*/React.createElement("div", {
-    className: 'inline-flex items-center rounded-full border border-border bg-card p-0.5 ' + className
-  }, [['en', 'EN'], ['zh', '中文']].map(([k, l]) => /*#__PURE__*/React.createElement("button", {
+    className: 'inline-flex items-center ' + className
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative inline-flex items-center"
+  }, /*#__PURE__*/React.createElement("select", {
+    value: val,
+    onChange: e => set(e.target.value),
+    "aria-label": "Language",
+    className: "w-auto max-w-[140px] cursor-pointer appearance-none truncate rounded-full border border-border bg-card py-1 pl-3 pr-7 text-xs font-bold text-foreground transition-colors hover:bg-accent focus:border-ring focus:outline-none"
+  }, LANGS.map(([k, l]) => /*#__PURE__*/React.createElement("option", {
     key: k,
-    onClick: () => set(k),
-    className: 'rounded-full px-2.5 py-1 text-xs font-bold transition-colors ' + (lang === k ? 'bg-foreground text-background' : 'text-muted-foreground')
-  }, l)));
+    value: k
+  }, l))), /*#__PURE__*/React.createElement("svg", {
+    viewBox: "0 0 24 24",
+    className: "pointer-events-none absolute right-2 h-3.5 w-3.5 text-muted-foreground",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: "2.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "m6 9 6 6 6-6"
+  }))));
 }
 Object.assign(window, {
   tx,
@@ -1536,13 +1547,13 @@ function CardImage({
   category,
   src,
   className = '',
-  radius = 10
+  radius = 0
 }) {
   if (src) {
     return /*#__PURE__*/React.createElement("div", {
       className: 'relative overflow-hidden bg-muted ' + className,
       style: {
-        borderRadius: radius
+        borderRadius: 0
       }
     }, /*#__PURE__*/React.createElement(Img, {
       src: src,
@@ -1551,11 +1562,11 @@ function CardImage({
     }));
   }
   return /*#__PURE__*/React.createElement("div", {
-    className: 'relative overflow-hidden rounded-md bg-muted ' + className
+    className: 'relative overflow-hidden bg-muted ' + className
   }, /*#__PURE__*/React.createElement("image-slot", {
     id: slotId(cert),
-    shape: "rounded",
-    radius: radius,
+    shape: "rect",
+    radius: 0,
     placeholder: (category || 'Card') + ' image"',
     style: {
       display: 'block',
@@ -1621,21 +1632,17 @@ function CardBack({
   });
 }
 
-function gradeCondition(sub) {
-  return (sub || '').replace(/\s*[\d.]+$/, '').trim();
-}
-
 /* Slab — PSA-style graded holder. face: 'front' (label + card) or 'back' (cert holo + back). */
 function Slab({
   item,
   className = '',
-  radius = 10,
+  radius = 0,
   big = false,
   face = 'front',
   style = null
 }) {
   const num = (item.grade || '').replace(/PSA\s*/i, '').trim();
-  const word = gradeCondition(item.sub);
+  const word = (item.sub || '').replace(/\s*[\d.]+$/, '').trim();
   const L = item.lbl || {};
   const caseStyle = {
     borderRadius: radius,
@@ -2139,23 +2146,18 @@ function PhoneInput({
   onChange,
   invalid
 }) {
-  const [open, setOpen] = useState(false);
-  const c = COUNTRIES.find(x => x.code === country) || COUNTRIES[0];
+  const c = COUNTRIES[0]; // Hong Kong only
   return /*#__PURE__*/React.createElement("div", {
     className: "relative"
   }, /*#__PURE__*/React.createElement("div", {
     className: 'flex h-11 items-stretch rounded-md border bg-background transition-shadow focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/30 ' + (invalid ? 'border-red-400' : 'border-input')
-  }, /*#__PURE__*/React.createElement("button", {
-    type: "button",
-    onClick: () => setOpen(o => !o),
-    className: "flex items-center gap-1.5 rounded-l-md pl-3 pr-2 text-[15px] font-semibold text-foreground hover:bg-accent"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1.5 rounded-l-md pl-3 pr-2 text-[15px] font-semibold text-foreground"
   }, /*#__PURE__*/React.createElement("span", {
     className: "text-base leading-none"
   }, c.flag), /*#__PURE__*/React.createElement("span", {
     className: "tabular-nums"
-  }, c.dial), /*#__PURE__*/React.createElement("span", {
-    className: "h-3.5 w-3.5 text-muted-foreground"
-  }, Icon.chevD)), /*#__PURE__*/React.createElement("div", {
+  }, c.dial)), /*#__PURE__*/React.createElement("div", {
     className: "my-2 w-px self-stretch bg-border"
   }), /*#__PURE__*/React.createElement("input", {
     type: "tel",
@@ -2164,26 +2166,7 @@ function PhoneInput({
     onChange: e => onChange(e.target.value),
     placeholder: "9123 4567",
     className: "min-w-0 flex-1 rounded-r-md bg-transparent px-3 text-[15px] font-medium text-foreground placeholder:font-normal placeholder:text-muted-foreground focus:outline-none"
-  })), open && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "fixed inset-0 z-20",
-    onClick: () => setOpen(false)
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "no-scrollbar absolute z-30 mt-1 max-h-56 w-full overflow-y-auto rounded-md border border-border bg-popover p-1 shadow-lg"
-  }, COUNTRIES.map(x => /*#__PURE__*/React.createElement("button", {
-    key: x.code,
-    type: "button",
-    onClick: () => {
-      onCountry && onCountry(x.code);
-      setOpen(false);
-    },
-    className: 'flex w-full items-center gap-2.5 rounded-sm px-2 py-2 text-left text-sm hover:bg-accent ' + (x.code === country ? 'bg-accent/60' : '')
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "text-base leading-none"
-  }, x.flag), /*#__PURE__*/React.createElement("span", {
-    className: "flex-1 truncate font-medium text-foreground"
-  }, tx(x.name)), /*#__PURE__*/React.createElement("span", {
-    className: "font-semibold tabular-nums text-muted-foreground"
-  }, x.dial))))));
+  })));
 }
 Object.assign(window, {
   Badge,
@@ -2238,7 +2221,7 @@ function Menu({
     key: it.key,
     onClick: () => onPick(it.key),
     className: "flex w-full items-center justify-between rounded-sm px-2 py-2 text-sm font-medium text-popover-foreground hover:bg-accent"
-  }, tx(it.label), current === it.key && /*#__PURE__*/React.createElement("span", {
+  }, it.label, current === it.key && /*#__PURE__*/React.createElement("span", {
     className: "h-4 w-4 text-primary"
   }, Icon.check))));
 }
@@ -2393,7 +2376,7 @@ function ListScreen({
     return /*#__PURE__*/React.createElement("button", {
       key: o.id,
       onClick: () => o.locked ? window.toast(tx('Details unavailable'), 'primary') : openOrder(o.id),
-      className: 'group flex w-full items-center gap-4 rounded-lg border border-border bg-card p-3 text-left transition-colors ' + (highlightId === o.id ? 'notif-glow ' : '') + (o.locked ? (highlightId === o.id ? '' : 'opacity-60 ') + 'active:scale-[.995]' : 'hover:border-foreground/15 hover:bg-accent/40 active:scale-[.995]')
+      className: 'group flex w-full items-center gap-4 rounded-lg border border-border bg-[#F5F6F8] p-3 text-left transition-colors dark:bg-card ' + (highlightId === o.id ? 'notif-glow ' : '') + (o.locked ? (highlightId === o.id ? '' : 'opacity-60 ') + 'active:scale-[.995]' : 'hover:border-foreground/15 hover:bg-accent/40 active:scale-[.995]')
     }, o.group === 'completed' ? /*#__PURE__*/React.createElement(Slab, {
       item: o.items[0],
       className: "h-[84px] w-[60px] shrink-0 shadow-sm"
@@ -2468,7 +2451,8 @@ function DetailScreen({
   openItems,
   openCard,
   startReveal,
-  revealed
+  revealed,
+  markRevealed
 }) {
   const completed = order.group === 'completed';
   const PREVIEW = 4;
@@ -2477,6 +2461,21 @@ function DetailScreen({
   const canViewAll = !(completed && !revealed);
   const imagesReady = order.items.some(it => it.grade || it.img || it.slab);
   const [tip, setTip] = useStateG(false);
+  const [confirmSkip, setConfirmSkip] = useStateG(false);
+  // View all is always available once images are ready. If grades aren't revealed
+  // yet, confirm that the user wants to skip the reveal before jumping to the list.
+  const handleViewAll = () => {
+    if (canViewAll) {
+      openItems();
+    } else {
+      setConfirmSkip(true);
+    }
+  };
+  const confirmAndView = () => {
+    markRevealed && markRevealed();
+    setConfirmSkip(false);
+    openItems();
+  };
   const _cd = order.completedOn ? new Date(order.completedOn) : null;
   const _ed = order.est ? new Date(order.est) : null;
   const daysEarly = _cd && _ed ? Math.round((_ed - _cd) / 86400000) : 0;
@@ -2535,8 +2534,8 @@ function DetailScreen({
     className: "mt-6 flex w-full items-center justify-between gap-3"
   }, /*#__PURE__*/React.createElement("span", {
     className: "whitespace-nowrap text-base font-bold text-foreground"
-  }, order.itemCount, " ", tx(order.itemCount === 1 ? 'Item' : 'Items')), canViewAll && /*#__PURE__*/React.createElement("button", {
-    onClick: openItems,
+  }, order.itemCount, " ", tx(order.itemCount === 1 ? 'Item' : 'Items')), /*#__PURE__*/React.createElement("button", {
+    onClick: handleViewAll,
     className: "flex shrink-0 items-center gap-1 whitespace-nowrap text-sm font-semibold text-muted-foreground transition-opacity active:opacity-60"
   }, tx('View all'), " ", /*#__PURE__*/React.createElement("span", {
     className: "h-4 w-4"
@@ -2556,11 +2555,8 @@ function DetailScreen({
     const blurred = completed && !revealed;
     return /*#__PURE__*/React.createElement("button", {
       key: it.cert,
-      onClick: () => {
-        if (!canViewAll) return;
-        openItems();
-      },
-      className: 'shrink-0 ' + (canViewAll ? 'transition-transform active:scale-95' : 'cursor-default')
+      onClick: handleViewAll,
+      className: "shrink-0 transition-transform active:scale-95"
     }, it.grade ? /*#__PURE__*/React.createElement(Slab, {
       item: it,
       className: "h-[92px] w-[66px] shadow-sm",
@@ -2574,11 +2570,8 @@ function DetailScreen({
       className: "h-[92px] w-[66px] shadow-sm"
     }));
   }), moreCount > 0 && /*#__PURE__*/React.createElement("button", {
-    onClick: () => {
-      if (!canViewAll) return;
-      openItems();
-    },
-    className: 'flex h-[92px] w-[66px] shrink-0 flex-col items-center justify-center rounded-[10px] border border-dashed border-border bg-muted/60 text-center ' + (canViewAll ? 'transition-colors hover:bg-muted' : 'cursor-default')
+    onClick: handleViewAll,
+    className: "flex h-[92px] w-[66px] shrink-0 flex-col items-center justify-center rounded-[10px] border border-dashed border-border bg-muted/60 text-center transition-colors hover:bg-muted"
   }, /*#__PURE__*/React.createElement("span", {
     className: "text-sm font-extrabold text-foreground"
   }, "+", moreCount), /*#__PURE__*/React.createElement("span", {
@@ -2597,7 +2590,30 @@ function DetailScreen({
     className: "mb-3 text-base font-bold text-foreground"
   }, tx('Status')), /*#__PURE__*/React.createElement(Stepper, {
     order: order
-  }))));
+  }))), confirmSkip && /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 z-40 flex items-end justify-center bg-black/50 p-4",
+    onClick: () => setConfirmSkip(false)
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full max-w-[400px] rounded-2xl bg-card p-5 shadow-xl",
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-foreground"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "h-[22px] w-[22px]"
+  }, Icon.sparkles)), /*#__PURE__*/React.createElement("h2", {
+    className: "mt-3.5 text-lg font-extrabold leading-tight text-foreground"
+  }, tx('View all grades now?')), /*#__PURE__*/React.createElement("p", {
+    className: "mt-1.5 text-[13px] font-medium leading-relaxed text-muted-foreground"
+  }, tx('We\u2019ll take you straight to the full list with every grade shown. You can always start the grade reveal later whenever you like.')), /*#__PURE__*/React.createElement("div", {
+    className: "mt-5 flex flex-col gap-2.5"
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: "dark",
+    className: "w-full",
+    onClick: confirmAndView
+  }, tx('View all')), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setConfirmSkip(false),
+    className: "flex h-12 w-full items-center justify-center rounded-md text-[15px] font-bold text-foreground transition-colors hover:bg-accent active:scale-[.99]"
+  }, tx('Cancel'))))));
 }
 
 /* ---------- ITEMS ---------- */
@@ -2639,7 +2655,7 @@ function ItemsScreen({
     className: "mt-1 text-sm font-bold text-foreground"
   }, it.grade, " ", /*#__PURE__*/React.createElement("span", {
     className: "font-semibold text-muted-foreground"
-  }, "\xB7 ", gradeCondition(it.sub))) : /*#__PURE__*/React.createElement(Badge, {
+  }, "\xB7 ", it.sub.replace(/\s*\d+$/, ''))) : /*#__PURE__*/React.createElement(Badge, {
     intent: "neutral",
     className: "mt-1.5"
   }, tx(order.group === 'completed' ? 'Shipping to you' : 'In grading'))), /*#__PURE__*/React.createElement("span", {
@@ -2659,22 +2675,22 @@ function CardDetail({
     big: true,
     face: "front",
     className: "h-full w-full shadow-md",
-    radius: 12
+    radius: 0
   }) : /*#__PURE__*/React.createElement(CardImage, {
     cert: item.cert,
     category: item.category,
     src: item.img,
     className: "aspect-[5/7] w-full",
-    radius: 12
+    radius: 0
   });
   const Back = () => graded ? /*#__PURE__*/React.createElement(Slab, {
     item: item,
     big: true,
     face: "back",
     className: "h-full w-full shadow-md",
-    radius: 12
+    radius: 0
   }) : /*#__PURE__*/React.createElement("div", {
-    className: "aspect-[5/7] w-full overflow-hidden rounded-xl"
+    className: "aspect-[5/7] w-full overflow-hidden"
   }, /*#__PURE__*/React.createElement(CardBack, {
     category: item.category
   }));
@@ -2723,7 +2739,7 @@ function CardDetail({
     className: "text-2xl font-extrabold text-foreground"
   }, item.grade), /*#__PURE__*/React.createElement("div", {
     className: "text-sm font-semibold text-muted-foreground"
-  }, gradeCondition(item.sub))))));
+  }, item.sub.replace(/\s*\d+$/, ''))))));
 }
 
 /* ---------- GRADE REVEAL ---------- */
@@ -2738,6 +2754,7 @@ function GradeReveal({
   const [phase, setPhase] = useStateG('rise'); // rise → ready → slice → open → emerge → reveal
   const timers = React.useRef([]);
   const sparkRef = React.useRef(null);
+  const rootRef = React.useRef(null);
   const openedRef = React.useRef(false);
   const clearTimers = () => {
     timers.current.forEach(clearTimeout);
@@ -2803,6 +2820,93 @@ function GradeReveal({
     startTimeline();
     return clearTimers;
   }, [show, idx]);
+
+  // 3D tilt — the scene leans with the phone's tilt (or pointer on desktop).
+  // Subtle: capped to a few degrees, eased, and disabled under reduced-motion.
+  React.useEffect(() => {
+    if (!show) return undefined;
+    if (typeof window === 'undefined') return undefined;
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return undefined;
+    const el = rootRef.current;
+    if (!el) return undefined;
+    const MAX_X = 6,
+      MAX_Y = 8; // max degrees (pitch, yaw)
+    let tx = 0,
+      ty = 0,
+      cx = 0,
+      cy = 0,
+      raf = 0;
+    const tick = () => {
+      raf = 0;
+      cx += (tx - cx) * 0.16;
+      cy += (ty - cy) * 0.16;
+      el.style.setProperty('--gr-tx', cx.toFixed(2) + 'deg');
+      el.style.setProperty('--gr-ty', cy.toFixed(2) + 'deg');
+      el.style.setProperty('--gr-shine-x', (cx * 2.6).toFixed(1) + 'px');
+      el.style.setProperty('--gr-shine-y', (cy * 2.6).toFixed(1) + 'px');
+      if (Math.abs(tx - cx) > 0.04 || Math.abs(ty - cy) > 0.04) raf = requestAnimationFrame(tick);
+    };
+    const schedule = () => {
+      if (!raf) raf = requestAnimationFrame(tick);
+    };
+    const clamp = (v, m) => v < -m ? -m : v > m ? m : v;
+    const onOrient = e => {
+      if (e.gamma == null || e.beta == null) return;
+      const g = clamp(e.gamma, 24); // left/right tilt
+      const b = clamp(e.beta - 40, 24); // front/back, around a natural hold (~40°)
+      tx = g / 24 * MAX_Y; // yaw follows left/right
+      ty = -(b / 24) * MAX_X; // pitch follows front/back
+      schedule();
+    };
+    const onPointer = e => {
+      const r = el.getBoundingClientRect();
+      tx = ((e.clientX - r.left) / r.width - 0.5) * 2 * MAX_Y;
+      ty = -((e.clientY - r.top) / r.height - 0.5) * 2 * MAX_X;
+      schedule();
+    };
+    const onLeave = () => {
+      tx = 0;
+      ty = 0;
+      schedule();
+    };
+    window.addEventListener('pointermove', onPointer, {
+      passive: true
+    });
+    el.addEventListener('pointerleave', onLeave);
+    let orientBound = false;
+    const bindOrient = () => {
+      if (orientBound) return;
+      orientBound = true;
+      window.addEventListener('deviceorientation', onOrient, {
+        passive: true
+      });
+    };
+    const DOE = window.DeviceOrientationEvent;
+    let askOnTap = null;
+    if (DOE && typeof DOE.requestPermission === 'function') {
+      askOnTap = () => {
+        DOE.requestPermission().then(s => {
+          if (s === 'granted') bindOrient();
+        }).catch(() => {});
+      };
+      window.addEventListener('pointerdown', askOnTap, {
+        once: true
+      });
+    } else if (DOE) {
+      bindOrient();
+    }
+    return () => {
+      window.removeEventListener('pointermove', onPointer);
+      window.removeEventListener('deviceorientation', onOrient);
+      if (askOnTap) window.removeEventListener('pointerdown', askOnTap);
+      el.removeEventListener('pointerleave', onLeave);
+      if (raf) cancelAnimationFrame(raf);
+      el.style.removeProperty('--gr-tx');
+      el.style.removeProperty('--gr-ty');
+      el.style.removeProperty('--gr-shine-x');
+      el.style.removeProperty('--gr-shine-y');
+    };
+  }, [show]);
   if (!show) return null;
   if (graded.length === 0) {
     return /*#__PURE__*/React.createElement("div", {
@@ -2844,7 +2948,8 @@ function GradeReveal({
   const HX_LOGO = typeof window !== 'undefined' && window.__resources && window.__resources.hobbyxLogo || 'assets/hobbyx-logo.png';
   return /*#__PURE__*/React.createElement("div", {
     className: "gr",
-    "data-phase": phase
+    "data-phase": phase,
+    ref: rootRef
   }, /*#__PURE__*/React.createElement("div", {
     className: "gr-vignette"
   }), /*#__PURE__*/React.createElement("div", {
@@ -2881,6 +2986,8 @@ function GradeReveal({
   }, /*#__PURE__*/React.createElement("div", {
     className: "gr-slab-bob"
   }, /*#__PURE__*/React.createElement("div", {
+    className: "gr-slab-tilt"
+  }, /*#__PURE__*/React.createElement("div", {
     className: "gr-slab-flip"
   }, /*#__PURE__*/React.createElement("div", {
     className: "gr-face gr-face-front"
@@ -2889,16 +2996,24 @@ function GradeReveal({
     big: true,
     face: "front",
     className: "h-full w-full",
-    radius: 11
+    radius: 0
   }), /*#__PURE__*/React.createElement("div", {
-    className: "gr-slab-holo"
+    className: "gr-gloss"
   })), /*#__PURE__*/React.createElement("div", {
     className: "gr-face gr-face-back"
   }, /*#__PURE__*/React.createElement(Slab, {
     item: item,
     face: "back",
     className: "h-full w-full",
-    radius: 11
+    radius: 0
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "gr-edge gr-edge-right"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "gr-edge gr-edge-left"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "gr-edge gr-edge-bottom"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "gr-edge gr-edge-top"
   })))))), /*#__PURE__*/React.createElement("div", {
     className: "gr-pack"
   }, /*#__PURE__*/React.createElement("div", {
@@ -2951,7 +3066,7 @@ function GradeReveal({
     className: "gr-grade"
   }, num)), /*#__PURE__*/React.createElement("div", {
     className: "gr-sub"
-  }, gradeCondition(item.sub)), /*#__PURE__*/React.createElement("div", {
+  }, item.sub.replace(/\s*\d+$/, '')), /*#__PURE__*/React.createElement("div", {
     className: "gr-name"
   }, tx(item.name)), /*#__PURE__*/React.createElement("button", {
     className: "gr-cta",
@@ -3107,9 +3222,9 @@ function AccountScreen({
   theme,
   setTheme,
   onSignOut,
-  openAccountInfo,
-  openNotifSettings
+  openAccountInfo
 }) {
+  const [notif, setNotif] = useStateG(true);
   return /*#__PURE__*/React.createElement("div", {
     className: "flex h-full flex-col bg-background"
   }, /*#__PURE__*/React.createElement(AppBar, {
@@ -3140,8 +3255,9 @@ function AccountScreen({
     const danger = label === 'Sign Out';
     const isAppearance = label === 'Appearance';
     const isLanguage = label === 'Language';
-    const isControl = isAppearance || isLanguage;
-    const onRow = label === 'Account Info' ? openAccountInfo : label === 'Notifications' ? openNotifSettings : danger ? onSignOut : undefined;
+    const isNotifications = label === 'Notifications';
+    const isControl = isAppearance || isLanguage || isNotifications;
+    const onRow = label === 'Account Info' ? openAccountInfo : danger ? onSignOut : undefined;
     const rowInner = /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("span", {
       className: 'flex items-center gap-3 text-[15px] font-semibold ' + (danger ? 'text-primary' : 'text-foreground')
     }, /*#__PURE__*/React.createElement("span", {
@@ -3152,7 +3268,10 @@ function AccountScreen({
       key: k,
       onClick: () => setTheme(k),
       className: 'rounded px-2.5 py-1 text-xs font-bold transition-colors ' + (theme === k ? 'bg-background text-foreground shadow-sm' : 'text-muted-foreground')
-    }, tx(l)))) : isLanguage ? /*#__PURE__*/React.createElement(LangToggle, null) : !danger && /*#__PURE__*/React.createElement("span", {
+    }, tx(l)))) : isLanguage ? /*#__PURE__*/React.createElement(LangToggle, null) : isNotifications ? /*#__PURE__*/React.createElement(Switch, {
+      checked: notif,
+      onChange: setNotif
+    }) : !danger && /*#__PURE__*/React.createElement("span", {
       className: "h-4 w-4 text-muted-foreground"
     }, Icon.chevR));
     const rowCls = 'flex w-full items-center justify-between px-4 py-3.5 ' + (ii > 0 ? 'border-t border-border' : '');
@@ -3328,83 +3447,8 @@ function AccountInfoScreen({
   }, Icon.check), " ", tx('Saved')) : tx('Save Changes'))));
 }
 
-/* ---------- NOTIFICATION SETTINGS ---------- */
-/* compact EN / 中文 toggle, scoped to the notification-language preference */
-function NotifLangToggle({
-  value,
-  onChange
-}) {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "inline-flex items-center rounded-full border border-border bg-card p-0.5"
-  }, [['en', 'EN'], ['zh', '中文']].map(([k, l]) => /*#__PURE__*/React.createElement("button", {
-    key: k,
-    onClick: () => onChange(k),
-    className: 'rounded-full px-2.5 py-1 text-xs font-bold transition-colors ' + (value === k ? 'bg-foreground text-background' : 'text-muted-foreground')
-  }, l)));
-}
-function NotificationSettingsScreen({
-  goBack
-}) {
-  useLang();
-  const [push, setPush] = useStateG(true);
-  const [notifLang, setNotifLang] = useStateG(() => {
-    try {
-      return localStorage.getItem('hobbyx_notif_lang') || window.__lang || 'en';
-    } catch (e) {
-      return window.__lang || 'en';
-    }
-  });
-  const saveNotifLang = l => {
-    setNotifLang(l);
-    try {
-      localStorage.setItem('hobbyx_notif_lang', l);
-    } catch (e) {}
-  };
-  return /*#__PURE__*/React.createElement("div", {
-    className: "flex h-full flex-col bg-background"
-  }, /*#__PURE__*/React.createElement(AppBar, {
-    onBack: goBack,
-    title: tx('Notifications')
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "no-scrollbar flex-1 overflow-y-auto px-5 pb-8"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-3 rounded-lg border border-border bg-card p-4"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: 'flex h-10 w-10 shrink-0 items-center justify-center rounded-lg transition-colors ' + (push ? 'bg-primary/10 text-primary' : 'bg-muted text-muted-foreground')
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "h-5 w-5"
-  }, Icon.bell)), /*#__PURE__*/React.createElement("div", {
-    className: "min-w-0 flex-1"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "text-[15px] font-bold text-foreground"
-  }, tx('Push notifications')), /*#__PURE__*/React.createElement("div", {
-    className: "mt-0.5 text-[12px] font-medium leading-snug text-muted-foreground"
-  }, tx('Allow HobbyX to send alerts to this device'))), /*#__PURE__*/React.createElement(Switch, {
-    checked: push,
-    onChange: setPush
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "mt-6"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "mb-2 px-1 text-xs font-bold uppercase tracking-wide text-muted-foreground"
-  }, tx('Language')), /*#__PURE__*/React.createElement("div", {
-    className: "overflow-hidden rounded-lg border border-border bg-card"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-3 px-4 py-3.5"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "h-[18px] w-[18px] shrink-0 text-muted-foreground"
-  }, Icon.globe), /*#__PURE__*/React.createElement("div", {
-    className: "min-w-0 flex-1"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "text-[15px] font-semibold text-foreground"
-  }, tx('Notification language')), /*#__PURE__*/React.createElement("div", {
-    className: "mt-0.5 text-[12px] font-medium leading-snug text-muted-foreground"
-  }, tx('Language used in your notifications'))), /*#__PURE__*/React.createElement(NotifLangToggle, {
-    value: notifLang,
-    onChange: saveNotifLang
-  })))), /*#__PURE__*/React.createElement("p", {
-    className: "mt-5 px-1 text-[12px] font-medium leading-relaxed text-muted-foreground"
-  }, tx('You can change these anytime. Critical account and security alerts are always sent.'))));
-}
+/* ---------- NOTIFICATIONS ---------- */
+
 Object.assign(window, {
   ListScreen,
   DetailScreen,
@@ -3413,8 +3457,7 @@ Object.assign(window, {
   GradeReveal,
   NotificationsScreen,
   AccountScreen,
-  AccountInfoScreen,
-  NotificationSettingsScreen
+  AccountInfoScreen
 });
 
 /* ===== app2/auth.jsx ===== */
@@ -3483,7 +3526,7 @@ function pwScore(v) {
 }
 function Brand({
   className = 'h-7',
-  wrap = 'py-3'
+  wrap = 'pt-11 pb-2'
 }) {
   return /*#__PURE__*/React.createElement("div", {
     className: 'flex justify-center ' + wrap
@@ -3768,10 +3811,13 @@ function Register({
   }
   return /*#__PURE__*/React.createElement("div", {
     className: "px-7"
-  }, /*#__PURE__*/React.createElement(Brand, null), /*#__PURE__*/React.createElement("h1", {
-    className: "mt-1 text-center text-[28px] font-extrabold tracking-tight text-foreground"
+  }, /*#__PURE__*/React.createElement(Brand, {
+    className: "h-12",
+    wrap: "pt-[58px] pb-0"
+  }), /*#__PURE__*/React.createElement("h1", {
+    className: "mt-5 text-center text-[28px] font-extrabold leading-none tracking-tight text-foreground"
   }, tx('Create account')), err && /*#__PURE__*/React.createElement("div", {
-    className: "mt-4"
+    className: "mt-6"
   }, /*#__PURE__*/React.createElement(Alert, null, tx('No internet connection. Check your network and try again.'))), /*#__PURE__*/React.createElement("div", {
     className: "mt-5 space-y-4"
   }, /*#__PURE__*/React.createElement(Field, {
@@ -4769,20 +4815,15 @@ function GradingApp({
     openAccountInfo: () => push({
       name: 'accountinfo'
     }),
-    openNotifSettings: () => push({
-      name: 'notifsettings'
-    }),
     onSignOut: () => {
       try {
         localStorage.removeItem('hobbyx_keep');
       } catch (e) {}
-      window.location.href = 'HobbyX App.html';
+      window.location.href = 'index.html';
     }
   }), top.name === 'accountinfo' && /*#__PURE__*/React.createElement(AccountInfoScreen, {
     goBack: pop,
     openLegal: () => {}
-  }), top.name === 'notifsettings' && /*#__PURE__*/React.createElement(NotificationSettingsScreen, {
-    goBack: pop
   }), top.name === 'detail' && order && /*#__PURE__*/React.createElement(DetailScreen, {
     order: order,
     goBack: pop,
@@ -4792,7 +4833,8 @@ function GradingApp({
       orderId: order.id
     }),
     openCard: i => setCard(i),
-    startReveal: () => setReveal(true)
+    startReveal: () => setReveal(true),
+    markRevealed: () => setRevealedIds(ids => ids.includes(order.id) ? ids : [...ids, order.id])
   }), top.name === 'items' && order && /*#__PURE__*/React.createElement(ItemsScreen, {
     order: order,
     goBack: pop,
