@@ -47,7 +47,8 @@ function progressFor(key) {
 // status → badge intent. ALL neutral so every label looks the same.
 // Only "Complete" keeps the success (green) tone.
 function statusIntent(key) {
-  if (key === 'complete') return 'success';
+  // Green from "Grades Ready" onward (ready → completing → complete) — grades can be revealed.
+  if (STEP_INDEX[key] >= STEP_INDEX.ready) return 'success';
   return 'neutral';
 }
 
@@ -101,22 +102,58 @@ const ORDERS = [{
     cert: '159790033',
     name: '1999 Pokémon Game Charizard Holo Unlimited #4',
     category: 'Pokémon',
-    img: PKM(4)
+    img: PKM(4),
+    grade: 'PSA 7',
+    sub: 'NM 7',
+    val: '$700 – $950',
+    lbl: {
+      set: '1999 POKEMON GAME',
+      nm: 'CHARIZARD-HOLO',
+      va: '',
+      no: '#4'
+    }
   }, {
     cert: '159790034',
     name: '1999 Pokémon Game Blastoise Holo #2',
     category: 'Pokémon',
-    img: PKM(2)
+    img: PKM(2),
+    grade: 'PSA 8',
+    sub: 'NM-MT 8',
+    val: '$250 – $360',
+    lbl: {
+      set: '1999 POKEMON GAME',
+      nm: 'BLASTOISE-HOLO',
+      va: '',
+      no: '#2'
+    }
   }, {
     cert: '159790035',
     name: '1999 Pokémon Game Venusaur Holo #15',
     category: 'Pokémon',
-    img: PKM(15)
+    img: PKM(15),
+    grade: 'PSA 9',
+    sub: 'MINT 9',
+    val: '$300 – $440',
+    lbl: {
+      set: '1999 POKEMON GAME',
+      nm: 'VENUSAUR-HOLO',
+      va: '',
+      no: '#15'
+    }
   }, {
     cert: '159790036',
     name: '1999 Pokémon Game Mewtwo Holo #10',
     category: 'Pokémon',
-    img: PKM(10)
+    img: PKM(10),
+    grade: 'PSA 8',
+    sub: 'NM-MT 8',
+    val: '$110 – $170',
+    lbl: {
+      set: '1999 POKEMON GAME',
+      nm: 'MEWTWO-HOLO',
+      va: '',
+      no: '#10'
+    }
   }]
 }, {
   id: 'o2',
@@ -295,12 +332,30 @@ const ORDERS = [{
     cert: '159794040',
     name: '1999 Pokémon Game Machamp Holo 1st Edition #8',
     category: 'Pokémon',
-    img: PKM(8)
+    img: PKM(8),
+    grade: 'PSA 9',
+    sub: 'MINT 9',
+    val: '$150 – $230',
+    lbl: {
+      set: '1999 POKEMON GAME',
+      nm: 'MACHAMP-HOLO',
+      va: '1ST EDITION',
+      no: '#8'
+    }
   }, {
     cert: '159794041',
     name: '1999 Pokémon Game Poliwrath Holo #13',
     category: 'Pokémon',
-    img: PKM(13)
+    img: PKM(13),
+    grade: 'PSA 7',
+    sub: 'NM 7',
+    val: '$55 – $85',
+    lbl: {
+      set: '1999 POKEMON GAME',
+      nm: 'POLIWRATH-HOLO',
+      va: '',
+      no: '#13'
+    }
   }]
 }, {
   id: 'o10',
@@ -322,7 +377,8 @@ const ORDERS = [{
   items: [{
     cert: '159795050',
     name: '2025 Weiss Schwarz Hatsune Miku SP Signed',
-    category: 'Weiss Schwarz'
+    category: 'Weiss Schwarz',
+    img: 'assets/card-no-image.png'
   }]
 }, {
   id: 'o4',
@@ -420,6 +476,50 @@ const ORDERS = [{
     }
   }]
 }, {
+  id: 'c3',
+  name: 'Autograph Single — Rayquaza',
+  category: 'Pokémon',
+  service: 'Regular',
+  shipment: 'Jun 05 · 1st Shipment',
+  turnaround: '10-15 Business Days',
+  num: '26660300',
+  itemCount: 1,
+  est: 'Jun 02, 2026',
+  estDays: '10 Business Days',
+  status: 'complete',
+  group: 'completed',
+  arrived: '2026-05-18',
+  completedOn: 'Jun 02, 2026',
+  tracking: '381339774521',
+  dates: {
+    arrived: 'May 18, 2026',
+    prep: 'May 20, 2026',
+    research: 'May 22, 2026',
+    grading: 'May 26, 2026',
+    assembly: 'May 28, 2026',
+    qa: 'May 29, 2026',
+    ready: 'May 30, 2026',
+    completing: 'Jun 01, 2026',
+    complete: 'Jun 02, 2026'
+  },
+  items: [{
+    cert: '137150278',
+    name: '2017 Pokémon JPN Sun & Moon Rayquaza SM4+ #084 — Yoshinobu Saito Auto',
+    category: 'Pokémon',
+    slab: 'assets/slab-rayquaza-ex6.png',
+    grade: 'PSA 6',
+    sub: 'EX-MT 6',
+    auto: 'AUTO 9',
+    val: '$320 – $480',
+    notes: 'EX-MT 6 with a PSA/DNA-certified Yoshinobu Saito autograph graded AUTO 9. Dual-graded holder — card grade and signature grade are certified separately.',
+    lbl: {
+      set: '2017 P.M. JPN. SUN & MOON',
+      nm: 'RAYQUAZA-SM4+',
+      va: 'YOSHINOBU SAITO',
+      no: '#084'
+    }
+  }]
+}, {
   id: 'c2',
   name: 'Legacy Duel Order',
   category: 'Pokémon',
@@ -454,7 +554,6 @@ const ORDERS = [{
     grade: 'PSA 10',
     sub: 'GEM MT 10',
     val: '$55 – $75',
-    notes: 'GEM MT 10. Sharp, well-centered corners with a clean holo surface and no print lines — a virtually perfect example.',
     lbl: {
       set: '2020 POKEMON SWSH BSP',
       nm: 'CHARIZARD V',
@@ -469,7 +568,6 @@ const ORDERS = [{
     grade: 'PSA 10',
     sub: 'GEM MT 10',
     val: '$30 – $45',
-    notes: 'GEM MT 10. Crisp edges and a flawless Vivid Voltage prerelease stamp, full gem-mint eye appeal front and back.',
     lbl: {
       set: '2020 POKEMON SWSH BSP',
       nm: 'DONPHAN-HOLO',
@@ -501,7 +599,7 @@ const TABS = [{
   label: 'In Progress'
 }, {
   key: 'completed',
-  label: 'Graded'
+  label: 'Completed'
 }];
 const SORTS = [{
   key: 'newest',
@@ -558,9 +656,9 @@ const NOTIFICATIONS = [{
 }];
 const ACCOUNT = {
   name: 'Alex Carter',
-  handle: '@alexc_cards',
   initials: 'AC',
   member: 'HobbyX member since 2023',
+  marketplaceListings: 2,
   info: {
     first: 'Alex',
     last: 'Carter',
@@ -575,7 +673,13 @@ const ACCOUNT = {
     items: [['Appearance', 'sun'], ['Language', 'globe'], ['Notifications', 'bell']]
   }, {
     group: 'Support',
-    items: [['Help Centre', 'help'], ['Terms & Privacy', 'doc'], ['Sign Out', 'signout']]
+    items: [['Help Centre', 'help'], ['Terms & Policies', 'doc']]
+  }, {
+    group: 'Session',
+    items: [['Sign Out', 'signout']]
+  }, {
+    group: 'Remove Account',
+    items: [['Delete Account', 'trash']]
   }]
 };
 const PAYOUT_METHODS = ['Bank Transfer', 'PayPal', 'Store Credit', 'Cheque'];
@@ -702,10 +806,38 @@ const ZH = {
   'Sign Out': '登出',
   'Preferences': '偏好設定',
   'Support': '支援',
+  'Session': '登入狀態',
   'Active': '進行中',
   'Graded': '已評級',
   'In vault': '保險庫',
   'HobbyX member since 2023': '自 2023 年起成為 HobbyX 會員',
+  'Delete your account?': '刪除你的帳戶？',
+  'Delete account': '刪除帳戶',
+  'This is permanent and cannot be undone.': '此操作為永久性，無法復原。',
+  'What will be deleted': '將被刪除的資料',
+  'Profile, saved cards, preferences, and other personal data linked to your account.': '個人資料、已儲存卡牌、偏好設定及其他與帳戶相關的個人資料。',
+  'Data we may retain': '可能保留的資料',
+  'Transaction records required for legal, tax, or accounting purposes. Not used for marketing.': '基於法律、稅務或會計需要而保留的交易記錄，不會用於市場推廣。',
+  'Active activity': '進行中的活動',
+  'grading submissions in progress': '項進行中的評級提交',
+  'grading submission in progress': '項進行中的評級提交',
+  'You will lose access to tracking and submission details.': '你將無法再存取相關追蹤及提交資料。',
+  'cards on HobbyX Marketplace': '張卡牌於 HobbyX 市場上架',
+  'card on HobbyX Marketplace': '張卡牌於 HobbyX 市場上架',
+  'Listings will be removed and sale information will no longer be accessible.': '上架項目將被移除，相關出售資料將無法再存取。',
+  'Please resolve these before deleting your account.': '請在刪除帳戶前先處理上述項目。',
+  'Confirm you understand': '請確認你已明白',
+  'Grading submissions': '評級提交',
+  'Marketplace listings': '市場上架',
+  'I accept responsibility for any loss of access to in-progress submission data.': '我接受因此可能無法再存取進行中提交資料的責任。',
+  'I accept responsibility for removing listings and completing active sales first.': '我接受在刪除前先移除上架項目及完成進行中交易的責任。',
+  'I understand this permanently deletes my account and cannot be undone.': '我明白此操作將永久刪除我的帳戶，且無法復原。',
+  'Permanent deletion': '永久刪除',
+  'No grading submissions in progress': '沒有進行中的評級提交',
+  'No marketplace listings': '沒有市場上架項目',
+  'You have no submissions currently being processed.': '你目前沒有正在處理中的提交。',
+  'You have no cards listed for sale on HobbyX Marketplace.': '你沒有在 HobbyX 市場上架出售的卡牌。',
+  'You can proceed once you confirm below.': '確認下方內容後即可繼續。',
   'Shipping to you': '寄送中',
   'In grading': '評級中',
   // —— pipeline / statuses ——
@@ -901,9 +1033,21 @@ function setLang(l) {
   } catch (e) {}
   langSubs.forEach(fn => fn());
 }
+/* Traditional → Simplified character map — covers every Chinese character used in ZH.
+   Characters identical in both scripts are omitted (left unchanged). */
+const T2S_PAIRS = '\u4e9e\u4e9a\u4e26\u5e76\u4f86\u6765\u5011\u4eec\u500b\u4e2a\u5099\u5907\u50b3\u4f20\u50c5\u4ec5\u50f9\u4ef7\u5132\u50a8\u5169\u4e24\u518a\u518c\u5225\u522b\u522a\u5220\u5247\u5219\u52d5\u52a8\u52d9\u52a1\u5354\u534f\u53c3\u53c2\u54e1\u5458\u55ae\u5355\u5617\u5c1d\u570b\u56fd\u5716\u56fe\u5834\u573a\u5922\u68a6\u5bf6\u5b9d\u5c07\u5c06\u5c0b\u5bfb\u5e33\u8d26\u5eab\u5e93\u5f35\u5f20\u5f37\u5f3a\u5f8c\u540e\u614b\u6001\u6232\u620f\u6236\u6237\u64c7\u62e9\u64ca\u51fb\u64da\u636e\u6578\u6570\u65bc\u4e8e\u6642\u65f6\u66ab\u6682\u66c9\u6653\u6703\u4f1a\u689d\u6761\u696d\u4e1a\u6a19\u6807\u6aa2\u68c0\u6bbc\u58f3\u6c7a\u51b3\u6c92\u6ca1\u6dfa\u6d45\u6e96\u51c6\u7063\u6e7e\u70ba\u4e3a\u7121\u65e0\u71df\u8425\u72c0\u72b6\u7372\u83b7\u73fe\u73b0\u756b\u753b\u7576\u5f53\u767c\u53d1\u76e1\u5c3d\u78ba\u786e\u78bc\u7801\u7a31\u79f0\u7a4d\u79ef\u7bc4\u8303\u7be9\u7b5b\u7c3d\u7b7e\u7c43\u7bee\u7c64\u7b7e\u7d1a\u7ea7\u7d30\u7ec6\u7d42\u7ec8\u7d50\u7ed3\u7d61\u7edc\u7d71\u7edf\u7d93\u7ecf\u7db2\u7f51\u7dda\u7ebf\u7de8\u7f16\u806f\u8054\u8072\u58f0\u8207\u4e0e\u820a\u65e7\u84cb\u76d6\u8655\u5904\u865f\u53f7\u88dd\u88c5\u88fd\u5236\u8996\u89c6\u89c0\u89c2\u89f8\u89e6\u8a02\u8ba2\u8a08\u8ba1\u8a0a\u8baf\u8a18\u8bb0\u8a2d\u8bbe\u8a31\u8bb8\u8a3b\u6ce8\u8a55\u8bc4\u8a5e\u8bcd\u8a66\u8bd5\u8a71\u8bdd\u8a73\u8be6\u8a8d\u8ba4\u8a9e\u8bed\u8acb\u8bf7\u8b49\u8bc1\u8b58\u8bc6\u8b77\u62a4\u8b80\u8bfb\u8b8a\u53d8\u8ca8\u8d27\u8cc7\u8d44\u8cca\u8d3c\u8cea\u8d28\u8e64\u8e2a\u8f15\u8f7b\u8f38\u8f93\u8f49\u8f6c\u9023\u8fde\u9032\u8fdb\u904a\u6e38\u9054\u8fbe\u9078\u9009\u90f5\u90ae\u9280\u94f6\u9451\u9274\u9577\u957f\u9580\u95e8\u958b\u5f00\u9593\u95f4\u95b1\u9605\u95dc\u5173\u968e\u9636\u96aa\u9669\u96b1\u9690\u96e2\u79bb\u96fb\u7535\u97d3\u97e9\u9801\u9875\u9805\u9879\u9810\u9884\u985e\u7c7b\u986f\u663e\u99ac\u9a6c\u9a57\u9a8c\u9b25\u6597\u9ede\u70b9\u5553\u542f\u5167\u5185';
+const T2S = {};
+for (let i = 0; i < T2S_PAIRS.length; i += 2) {
+  T2S[T2S_PAIRS[i]] = T2S_PAIRS[i + 1];
+}
+function isSimp(l) {
+  return l === 'zh-Hans' || l === 'zh-CN' || l === 'zh-SG';
+}
 function tx(s) {
-  if (!window.__lang || window.__lang === 'en' || s == null) return s;
-  return ZH[s] || s; // any zh-* variant maps to the Traditional Chinese dictionary
+  const l = window.__lang;
+  if (!l || l === 'en' || s == null) return s;
+  const t = ZH[s] || s; // Traditional (or English passthrough)
+  return isSimp(l) ? t.replace(/[\u3400-\u9fff]/g, c => T2S[c] || c) : t;
 }
 function useLang() {
   const [, force] = useI18nState(0);
@@ -915,13 +1059,18 @@ function useLang() {
   return [window.__lang, setLang];
 }
 
-/* full language picker — English + every supported Chinese variant */
-const LANGS = [['en', 'English'], ['zh-HK', '繁中·香港'], ['zh-TW', '繁中·台灣'], ['zh-MO', '繁中·澳門'], ['zh-CN', '简中·大陆'], ['zh-SG', '简中·新加坡']];
+/* language picker — English, Traditional Chinese, Simplified Chinese */
+const LANGS = [['en', 'English'], ['zh-Hant', '繁體中文'], ['zh-Hans', '简体中文']];
+/* normalise any legacy stored value to one of the three options */
+function normLang(l) {
+  if (l === 'en') return 'en';
+  return isSimp(l) ? 'zh-Hans' : 'zh-Hant';
+}
 function LangToggle({
   className = ''
 }) {
   const [lang, set] = useLang();
-  const val = lang === 'zh' ? 'zh-HK' : lang; // migrate legacy value
+  const val = normLang(lang);
   return /*#__PURE__*/React.createElement("div", {
     className: 'inline-flex items-center ' + className
   }, /*#__PURE__*/React.createElement("div", {
@@ -930,7 +1079,10 @@ function LangToggle({
     value: val,
     onChange: e => set(e.target.value),
     "aria-label": "Language",
-    className: "w-auto max-w-[140px] cursor-pointer appearance-none truncate rounded-full border border-border bg-card py-1 pl-3 pr-7 text-xs font-bold text-foreground transition-colors hover:bg-accent focus:border-ring focus:outline-none"
+    style: {
+      minWidth: '7rem'
+    },
+    className: "max-w-[140px] cursor-pointer appearance-none rounded-full border border-border bg-card py-1 pl-3 pr-7 text-xs font-bold text-foreground transition-colors hover:bg-accent focus:border-ring focus:outline-none"
   }, LANGS.map(([k, l]) => /*#__PURE__*/React.createElement("option", {
     key: k,
     value: k
@@ -1368,6 +1520,39 @@ const Icon = {
     r: "1.4",
     fill: "currentColor",
     stroke: "none"
+  })),
+  trash: /*#__PURE__*/React.createElement("svg", _extends({
+    viewBox: "0 0 24 24"
+  }, sx), /*#__PURE__*/React.createElement("path", {
+    d: "M3 6h18"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M10 11v6M14 11v6"
+  })),
+  facebook: /*#__PURE__*/React.createElement("svg", _extends({
+    viewBox: "0 0 24 24"
+  }, sx), /*#__PURE__*/React.createElement("path", {
+    d: "M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+  })),
+  instagram: /*#__PURE__*/React.createElement("svg", _extends({
+    viewBox: "0 0 24 24"
+  }, sx), /*#__PURE__*/React.createElement("rect", {
+    x: "2",
+    y: "2",
+    width: "20",
+    height: "20",
+    rx: "5",
+    ry: "5"
+  }), /*#__PURE__*/React.createElement("path", {
+    d: "M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"
+  }), /*#__PURE__*/React.createElement("line", {
+    x1: "17.5",
+    y1: "6.5",
+    x2: "17.51",
+    y2: "6.5"
   }))
 };
 Object.assign(window, {
@@ -1567,7 +1752,8 @@ function CardImage({
     id: slotId(cert),
     shape: "rect",
     radius: 0,
-    placeholder: (category || 'Card') + ' image"',
+    src: "assets/card-no-image.png",
+    placeholder: (category || 'Card') + ' image',
     style: {
       display: 'block',
       width: '100%',
@@ -1639,7 +1825,8 @@ function Slab({
   radius = 0,
   big = false,
   face = 'front',
-  style = null
+  style = null,
+  hideNotes = false
 }) {
   const num = (item.grade || '').replace(/PSA\s*/i, '').trim();
   const word = (item.sub || '').replace(/\s*[\d.]+$/, '').trim();
@@ -1650,6 +1837,25 @@ function Slab({
     boxShadow: 'inset 0 0 0 1px rgba(255,255,255,.6), inset 0 0 6px rgba(0,0,0,.12), 0 2px 10px rgba(0,0,0,.28)',
     padding: big ? '6%' : '8%'
   };
+
+  // Grader-notes badge — a small white disc with a document glyph, shown on the
+  // bottom-right of the slab only when this item actually has grader notes.
+  const notesBadge = item.notes && !hideNotes && face !== 'back' ? /*#__PURE__*/React.createElement("div", {
+    className: "absolute z-10 flex items-center justify-center rounded-full bg-white text-neutral-700 shadow-[0_1px_4px_rgba(0,0,0,.4)] ring-1 ring-black/10",
+    style: {
+      right: '6%',
+      bottom: '5%',
+      width: big ? 30 : 17,
+      height: big ? 30 : 17
+    },
+    title: "Grader notes",
+    "aria-label": "Grader notes"
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      width: big ? 15 : 9,
+      height: big ? 15 : 9
+    }
+  }, Icon.doc)) : null;
   if (face === 'back') {
     // Real PSA slab-back photo (holder chrome + Pokémon card back) — used everywhere a back is shown.
     return /*#__PURE__*/React.createElement("div", {
@@ -1682,7 +1888,7 @@ function Slab({
       alt: item.name,
       draggable: false,
       className: "block h-full w-full object-cover"
-    }));
+    }), notesBadge);
   }
 
   // FRONT
@@ -1747,13 +1953,14 @@ function Slab({
     id: slotId(item.cert),
     shape: "rect",
     radius: 0,
-    placeholder: (item.category || 'Card') + ' image"',
+    src: "assets/card-no-image.png",
+    placeholder: (item.category || 'Card') + ' image',
     style: {
       display: 'block',
       width: '100%',
       height: '100%'
     }
-  })));
+  })), notesBadge);
 }
 function StatusBar() {
   return /*#__PURE__*/React.createElement("div", {
@@ -1853,13 +2060,13 @@ function Tabs({
   tabs
 }) {
   return /*#__PURE__*/React.createElement("div", {
-    className: "mx-5 mb-3 inline-flex h-10 items-center rounded-lg bg-muted p-1 text-muted-foreground"
+    className: "mx-5 mb-3 flex h-10 items-center rounded-lg bg-muted p-1 text-muted-foreground"
   }, tabs.map(t => {
     const sel = value === t.key;
     return /*#__PURE__*/React.createElement("button", {
       key: t.key,
       onClick: () => onChange(t.key),
-      className: 'inline-flex h-8 flex-1 items-center justify-center gap-1.5 rounded-md px-3 text-sm font-semibold transition-all ' + (sel ? 'bg-background text-foreground shadow-sm' : 'hover:text-foreground')
+      className: 'inline-flex h-8 flex-1 items-center justify-center gap-1.5 whitespace-nowrap rounded-md px-3 text-sm font-semibold transition-all ' + (sel ? 'bg-background text-foreground shadow-sm' : 'hover:text-foreground')
     }, tx(t.label), t.count != null && /*#__PURE__*/React.createElement("span", {
       className: 'inline-flex min-w-[18px] items-center justify-center rounded-full px-1 py-0.5 text-[11px] font-bold leading-none tabular-nums ' + (sel ? 'bg-primary/10 text-primary' : 'bg-foreground/10 text-muted-foreground')
     }, t.count));
@@ -2063,82 +2270,17 @@ function PwCriteria({
 }
 
 /* ---------- country / phone input ---------- */
-const COUNTRIES = [{
-  code: 'HK',
-  dial: '+852',
-  flag: '🇭🇰',
-  name: 'Hong Kong'
-}, {
-  code: 'CN',
-  dial: '+86',
-  flag: '🇨🇳',
-  name: 'China'
-}, {
-  code: 'TW',
-  dial: '+886',
-  flag: '🇹🇼',
-  name: 'Taiwan'
-}, {
-  code: 'SG',
-  dial: '+65',
-  flag: '🇸🇬',
-  name: 'Singapore'
-}, {
-  code: 'MY',
-  dial: '+60',
-  flag: '🇲🇾',
-  name: 'Malaysia'
-}, {
-  code: 'JP',
-  dial: '+81',
-  flag: '🇯🇵',
-  name: 'Japan'
-}, {
-  code: 'KR',
-  dial: '+82',
-  flag: '🇰🇷',
-  name: 'South Korea'
-}, {
-  code: 'US',
-  dial: '+1',
-  flag: '🇺🇸',
-  name: 'United States'
-}, {
-  code: 'CA',
-  dial: '+1',
-  flag: '🇨🇦',
-  name: 'Canada'
-}, {
-  code: 'GB',
-  dial: '+44',
-  flag: '🇬🇧',
-  name: 'United Kingdom'
-}, {
-  code: 'AU',
-  dial: '+61',
-  flag: '🇦🇺',
-  name: 'Australia'
-}, {
-  code: 'DE',
-  dial: '+49',
-  flag: '🇩🇪',
-  name: 'Germany'
-}, {
-  code: 'FR',
-  dial: '+33',
-  flag: '🇫🇷',
-  name: 'France'
-}, {
-  code: 'IN',
-  dial: '+91',
-  flag: '🇮🇳',
-  name: 'India'
-}, {
-  code: 'AE',
-  dial: '+971',
-  flag: '🇦🇪',
-  name: 'United Arab Emirates'
-}];
+/* Full ISO-3166 country list with international dial codes. Flag emoji is derived
+   from the 2-letter code (regional-indicator symbols) so the table stays compact. */
+const COUNTRY_DATA = [['HK', '852', 'Hong Kong'], ['CN', '86', 'China'], ['TW', '886', 'Taiwan'], ['MO', '853', 'Macau'], ['SG', '65', 'Singapore'], ['MY', '60', 'Malaysia'], ['JP', '81', 'Japan'], ['KR', '82', 'South Korea'], ['US', '1', 'United States'], ['CA', '1', 'Canada'], ['GB', '44', 'United Kingdom'], ['AU', '61', 'Australia'], ['DE', '49', 'Germany'], ['FR', '33', 'France'], ['IN', '91', 'India'], ['AE', '971', 'United Arab Emirates'], ['AF', '93', 'Afghanistan'], ['AL', '355', 'Albania'], ['DZ', '213', 'Algeria'], ['AD', '376', 'Andorra'], ['AO', '244', 'Angola'], ['AG', '1268', 'Antigua and Barbuda'], ['AR', '54', 'Argentina'], ['AM', '374', 'Armenia'], ['AT', '43', 'Austria'], ['AZ', '994', 'Azerbaijan'], ['BS', '1242', 'Bahamas'], ['BH', '973', 'Bahrain'], ['BD', '880', 'Bangladesh'], ['BB', '1246', 'Barbados'], ['BY', '375', 'Belarus'], ['BE', '32', 'Belgium'], ['BZ', '501', 'Belize'], ['BJ', '229', 'Benin'], ['BT', '975', 'Bhutan'], ['BO', '591', 'Bolivia'], ['BA', '387', 'Bosnia and Herzegovina'], ['BW', '267', 'Botswana'], ['BR', '55', 'Brazil'], ['BN', '673', 'Brunei'], ['BG', '359', 'Bulgaria'], ['BF', '226', 'Burkina Faso'], ['BI', '257', 'Burundi'], ['KH', '855', 'Cambodia'], ['CM', '237', 'Cameroon'], ['CV', '238', 'Cape Verde'], ['CF', '236', 'Central African Republic'], ['TD', '235', 'Chad'], ['CL', '56', 'Chile'], ['CO', '57', 'Colombia'], ['KM', '269', 'Comoros'], ['CG', '242', 'Congo'], ['CD', '243', 'Congo (DRC)'], ['CR', '506', 'Costa Rica'], ['CI', '225', 'Côte d’Ivoire'], ['HR', '385', 'Croatia'], ['CU', '53', 'Cuba'], ['CY', '357', 'Cyprus'], ['CZ', '420', 'Czechia'], ['DK', '45', 'Denmark'], ['DJ', '253', 'Djibouti'], ['DM', '1767', 'Dominica'], ['DO', '1809', 'Dominican Republic'], ['EC', '593', 'Ecuador'], ['EG', '20', 'Egypt'], ['SV', '503', 'El Salvador'], ['GQ', '240', 'Equatorial Guinea'], ['ER', '291', 'Eritrea'], ['EE', '372', 'Estonia'], ['SZ', '268', 'Eswatini'], ['ET', '251', 'Ethiopia'], ['FJ', '679', 'Fiji'], ['FI', '358', 'Finland'], ['GA', '241', 'Gabon'], ['GM', '220', 'Gambia'], ['GE', '995', 'Georgia'], ['GH', '233', 'Ghana'], ['GR', '30', 'Greece'], ['GD', '1473', 'Grenada'], ['GT', '502', 'Guatemala'], ['GN', '224', 'Guinea'], ['GW', '245', 'Guinea-Bissau'], ['GY', '592', 'Guyana'], ['HT', '509', 'Haiti'], ['HN', '504', 'Honduras'], ['HU', '36', 'Hungary'], ['IS', '354', 'Iceland'], ['ID', '62', 'Indonesia'], ['IR', '98', 'Iran'], ['IQ', '964', 'Iraq'], ['IE', '353', 'Ireland'], ['IL', '972', 'Israel'], ['IT', '39', 'Italy'], ['JM', '1876', 'Jamaica'], ['JO', '962', 'Jordan'], ['KZ', '7', 'Kazakhstan'], ['KE', '254', 'Kenya'], ['KI', '686', 'Kiribati'], ['KW', '965', 'Kuwait'], ['KG', '996', 'Kyrgyzstan'], ['LA', '856', 'Laos'], ['LV', '371', 'Latvia'], ['LB', '961', 'Lebanon'], ['LS', '266', 'Lesotho'], ['LR', '231', 'Liberia'], ['LY', '218', 'Libya'], ['LI', '423', 'Liechtenstein'], ['LT', '370', 'Lithuania'], ['LU', '352', 'Luxembourg'], ['MG', '261', 'Madagascar'], ['MW', '265', 'Malawi'], ['MV', '960', 'Maldives'], ['ML', '223', 'Mali'], ['MT', '356', 'Malta'], ['MH', '692', 'Marshall Islands'], ['MR', '222', 'Mauritania'], ['MU', '230', 'Mauritius'], ['MX', '52', 'Mexico'], ['FM', '691', 'Micronesia'], ['MD', '373', 'Moldova'], ['MC', '377', 'Monaco'], ['MN', '976', 'Mongolia'], ['ME', '382', 'Montenegro'], ['MA', '212', 'Morocco'], ['MZ', '258', 'Mozambique'], ['MM', '95', 'Myanmar'], ['NA', '264', 'Namibia'], ['NR', '674', 'Nauru'], ['NP', '977', 'Nepal'], ['NL', '31', 'Netherlands'], ['NZ', '64', 'New Zealand'], ['NI', '505', 'Nicaragua'], ['NE', '227', 'Niger'], ['NG', '234', 'Nigeria'], ['MK', '389', 'North Macedonia'], ['NO', '47', 'Norway'], ['OM', '968', 'Oman'], ['PK', '92', 'Pakistan'], ['PW', '680', 'Palau'], ['PS', '970', 'Palestine'], ['PA', '507', 'Panama'], ['PG', '675', 'Papua New Guinea'], ['PY', '595', 'Paraguay'], ['PE', '51', 'Peru'], ['PH', '63', 'Philippines'], ['PL', '48', 'Poland'], ['PT', '351', 'Portugal'], ['QA', '974', 'Qatar'], ['RO', '40', 'Romania'], ['RU', '7', 'Russia'], ['RW', '250', 'Rwanda'], ['KN', '1869', 'Saint Kitts and Nevis'], ['LC', '1758', 'Saint Lucia'], ['VC', '1784', 'Saint Vincent and the Grenadines'], ['WS', '685', 'Samoa'], ['SM', '378', 'San Marino'], ['ST', '239', 'São Tomé and Príncipe'], ['SA', '966', 'Saudi Arabia'], ['SN', '221', 'Senegal'], ['RS', '381', 'Serbia'], ['SC', '248', 'Seychelles'], ['SL', '232', 'Sierra Leone'], ['SK', '421', 'Slovakia'], ['SI', '386', 'Slovenia'], ['SB', '677', 'Solomon Islands'], ['SO', '252', 'Somalia'], ['ZA', '27', 'South Africa'], ['SS', '211', 'South Sudan'], ['ES', '34', 'Spain'], ['LK', '94', 'Sri Lanka'], ['SD', '249', 'Sudan'], ['SR', '597', 'Suriname'], ['SE', '46', 'Sweden'], ['CH', '41', 'Switzerland'], ['SY', '963', 'Syria'], ['TJ', '992', 'Tajikistan'], ['TZ', '255', 'Tanzania'], ['TH', '66', 'Thailand'], ['TL', '670', 'Timor-Leste'], ['TG', '228', 'Togo'], ['TO', '676', 'Tonga'], ['TT', '1868', 'Trinidad and Tobago'], ['TN', '216', 'Tunisia'], ['TR', '90', 'Turkey'], ['TM', '993', 'Turkmenistan'], ['TV', '688', 'Tuvalu'], ['UG', '256', 'Uganda'], ['UA', '380', 'Ukraine'], ['UY', '598', 'Uruguay'], ['UZ', '998', 'Uzbekistan'], ['VU', '678', 'Vanuatu'], ['VA', '379', 'Vatican City'], ['VE', '58', 'Venezuela'], ['VN', '84', 'Vietnam'], ['YE', '967', 'Yemen'], ['ZM', '260', 'Zambia'], ['ZW', '263', 'Zimbabwe']];
+const codeToFlag = code => code.toUpperCase().replace(/./g, ch => String.fromCodePoint(127397 + ch.charCodeAt(0)));
+const COUNTRIES = COUNTRY_DATA.map(([code, dial, name]) => ({
+  code,
+  dial: '+' + dial,
+  flag: codeToFlag(code),
+  name
+})).sort((a, b) => a.name.localeCompare(b.name)); // alphabetical by country name
+
 function PhoneInput({
   country = 'HK',
   onCountry,
@@ -2146,18 +2288,31 @@ function PhoneInput({
   onChange,
   invalid
 }) {
-  const c = COUNTRIES[0]; // Hong Kong only
+  const [open, setOpen] = useState(false);
+  const [q, setQ] = useState('');
+  const c = COUNTRIES.find(x => x.code === country) || COUNTRIES[0];
+  const term = q.trim().toLowerCase();
+  const list = term ? COUNTRIES.filter(x => x.name.toLowerCase().includes(term) || x.dial.replace('+', '').includes(term.replace('+', '')) || x.code.toLowerCase() === term) : COUNTRIES;
+  const choose = code => {
+    onCountry && onCountry(code);
+    setOpen(false);
+    setQ('');
+  };
   return /*#__PURE__*/React.createElement("div", {
     className: "relative"
   }, /*#__PURE__*/React.createElement("div", {
     className: 'flex h-11 items-stretch rounded-md border bg-background transition-shadow focus-within:border-ring focus-within:ring-2 focus-within:ring-ring/30 ' + (invalid ? 'border-red-400' : 'border-input')
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center gap-1.5 rounded-l-md pl-3 pr-2 text-[15px] font-semibold text-foreground"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => setOpen(o => !o),
+    className: "flex items-center gap-1.5 rounded-l-md pl-3 pr-2 text-[15px] font-semibold text-foreground transition-colors hover:bg-accent active:bg-accent"
   }, /*#__PURE__*/React.createElement("span", {
     className: "text-base leading-none"
   }, c.flag), /*#__PURE__*/React.createElement("span", {
     className: "tabular-nums"
-  }, c.dial)), /*#__PURE__*/React.createElement("div", {
+  }, c.dial), /*#__PURE__*/React.createElement("span", {
+    className: "h-3.5 w-3.5 shrink-0 opacity-60"
+  }, Icon.chevD)), /*#__PURE__*/React.createElement("div", {
     className: "my-2 w-px self-stretch bg-border"
   }), /*#__PURE__*/React.createElement("input", {
     type: "tel",
@@ -2166,7 +2321,40 @@ function PhoneInput({
     onChange: e => onChange(e.target.value),
     placeholder: "9123 4567",
     className: "min-w-0 flex-1 rounded-r-md bg-transparent px-3 text-[15px] font-medium text-foreground placeholder:font-normal placeholder:text-muted-foreground focus:outline-none"
-  })));
+  })), open && /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-20",
+    onClick: () => {
+      setOpen(false);
+      setQ('');
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "absolute left-0 right-0 z-30 mt-1 rounded-md border border-border bg-popover p-1 shadow-lg"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative px-1 pt-1 pb-1.5"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground"
+  }, Icon.search), /*#__PURE__*/React.createElement("input", {
+    autoFocus: true,
+    value: q,
+    onChange: e => setQ(e.target.value),
+    placeholder: tx('Search country or code'),
+    className: "h-9 w-full rounded-sm border border-input bg-background pl-8 pr-3 text-sm font-medium text-foreground placeholder:font-normal placeholder:text-muted-foreground focus:outline-none focus:border-ring focus:ring-2 focus:ring-ring/30"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "no-scrollbar max-h-56 overflow-y-auto overscroll-contain"
+  }, list.length === 0 ? /*#__PURE__*/React.createElement("div", {
+    className: "px-3 py-6 text-center text-sm font-medium text-muted-foreground"
+  }, tx('No countries found')) : list.map(x => /*#__PURE__*/React.createElement("button", {
+    key: x.code,
+    type: "button",
+    onClick: () => choose(x.code),
+    className: 'flex w-full items-center gap-2.5 rounded-sm px-2 py-2 text-left text-sm hover:bg-accent ' + (x.code === country ? 'bg-accent/60' : '')
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "text-base leading-none"
+  }, x.flag), /*#__PURE__*/React.createElement("span", {
+    className: "min-w-0 flex-1 truncate font-medium text-popover-foreground"
+  }, x.name), /*#__PURE__*/React.createElement("span", {
+    className: "shrink-0 tabular-nums font-semibold text-muted-foreground"
+  }, x.dial)))))));
 }
 Object.assign(window, {
   Badge,
@@ -2246,7 +2434,7 @@ function FilterBtn({
 
 /* ---------- LIST ---------- */
 function ListScreen({
-  tab,
+  tab: tabProp,
   setTab,
   openOrder,
   openNotifs,
@@ -2254,14 +2442,35 @@ function ListScreen({
   unread,
   offline,
   empty,
+  gradingOnly,
   highlightId,
   clearHighlight
 }) {
+  const tab = tabProp;
   const [q, setQ] = useStateG('');
   const [sort, setSort] = useStateG('newest');
   const [statusF, setStatusF] = useStateG('all');
   const [menu, setMenu] = useStateG(null);
   const [tip, setTip] = useStateG(null);
+  // collapsing search/filter bar: hide while scrolling down the rows, reveal on scroll up
+  const scrollRef = React.useRef(null);
+  const lastY = React.useRef(0);
+  const [hideBar, setHideBar] = useStateG(false);
+  const onListScroll = () => {
+    const el = scrollRef.current;
+    if (!el) return;
+    const y = el.scrollTop,
+      max = el.scrollHeight - el.clientHeight,
+      dy = y - lastY.current;
+    // Freeze toggling near the bottom: collapsing the bar reflows the list height,
+    // which clamps scrollTop and would otherwise feed back into a flicker loop.
+    if (max - y < 56) {
+      lastY.current = y;
+      return;
+    }
+    if (y < 8) setHideBar(false);else if (dy > 6) setHideBar(true);else if (dy < -6) setHideBar(false);
+    lastY.current = y;
+  };
 
   // notification → list: clear the orange highlight once its glow has played
   React.useEffect(() => {
@@ -2269,7 +2478,7 @@ function ListScreen({
     const t = setTimeout(() => clearHighlight && clearHighlight(), 3000);
     return () => clearTimeout(t);
   }, [highlightId]);
-  const base = empty ? [] : ORDERS.filter(o => tab === 'completed' ? o.group === 'completed' : o.group === 'progress');
+  const base = empty ? [] : gradingOnly ? tab === 'completed' ? ORDERS.filter(o => o.group === 'completed') : [] : ORDERS.filter(o => tab === 'completed' ? o.group === 'completed' : o.group === 'progress');
   let rows = base;
   if (q.trim()) rows = rows.filter(o => (o.name + ' ' + o.category).toLowerCase().includes(q.toLowerCase()));
   if (tab === 'progress' && statusF !== 'all') rows = rows.filter(o => o.status === statusF);
@@ -2299,17 +2508,24 @@ function ListScreen({
     onClick: openNotifs
   }, Icon.bell), /*#__PURE__*/React.createElement(Avatar, {
     onClick: openAccount
-  }))), /*#__PURE__*/React.createElement(Tabs, {
+  }))), !empty && /*#__PURE__*/React.createElement("div", {
+    style: {
+      maxHeight: hideBar ? 0 : 320,
+      opacity: hideBar ? 0 : 1,
+      overflow: menu ? 'visible' : 'hidden',
+      transition: 'max-height .3s ease, opacity .25s ease'
+    }
+  }, /*#__PURE__*/React.createElement(Tabs, {
     value: tab,
     onChange: t => {
       setTab(t);
       setMenu(null);
     },
-    tabs: empty ? TABS.map(t => ({
+    tabs: gradingOnly ? TABS.map(t => ({
       ...t,
-      count: 0
+      count: t.key === 'completed' ? ORDERS.filter(o => o.group === 'completed').length : 0
     })) : TABS_WITH_COUNTS
-  }), !empty && /*#__PURE__*/React.createElement("div", {
+  }), (!gradingOnly || tab === 'completed') && /*#__PURE__*/React.createElement("div", {
     className: "px-5 pb-3"
   }, /*#__PURE__*/React.createElement("div", {
     className: "relative flex items-center"
@@ -2360,8 +2576,10 @@ function ListScreen({
     className: "ml-auto inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md border border-input bg-background text-foreground transition-colors hover:bg-accent"
   }, /*#__PURE__*/React.createElement("span", {
     className: "h-4 w-4"
-  }, Icon.close)))), /*#__PURE__*/React.createElement("div", {
-    className: "no-scrollbar flex-1 space-y-2.5 overflow-y-auto px-5 pb-8"
+  }, Icon.close))))), /*#__PURE__*/React.createElement("div", {
+    className: "no-scrollbar flex-1 space-y-2.5 overflow-y-auto px-5 pb-8",
+    ref: scrollRef,
+    onScroll: onListScroll
   }, rows.length === 0 && (filtered ? /*#__PURE__*/React.createElement(EmptyState, {
     icon: null,
     title: tx('No orders match'),
@@ -2391,15 +2609,17 @@ function ListScreen({
       className: "flex items-start justify-between gap-2.5"
     }, /*#__PURE__*/React.createElement("div", {
       className: "min-w-0 truncate text-[15px] font-semibold leading-tight text-foreground"
-    }, tx(o.service)), o.locked && /*#__PURE__*/React.createElement(Badge, {
-      intent: "neutral",
-      className: "shrink-0"
-    }, tx('Order Arrived'))), /*#__PURE__*/React.createElement("div", {
+    }, tx(o.service))), /*#__PURE__*/React.createElement("div", {
       className: "mt-1 truncate whitespace-nowrap text-xs font-medium text-muted-foreground",
       style: {
         fontSize: "13px"
       }
-    }, (o.shipment || tx(o.category)) + (oReady ? ' · ' + o.itemCount + ' ' + tx(o.itemCount === 1 ? 'item' : 'items') : '')), !o.locked && o.group !== 'completed' && /*#__PURE__*/React.createElement("div", {
+    }, (o.shipment || tx(o.category)) + (oReady ? ' · ' + o.itemCount + ' ' + tx(o.itemCount === 1 ? 'item' : 'items') : '')), o.locked && /*#__PURE__*/React.createElement("div", {
+      className: "mt-2 flex"
+    }, /*#__PURE__*/React.createElement(Badge, {
+      intent: "neutral",
+      className: "shrink-0"
+    }, tx('Order Arrived'))), !o.locked && o.group !== 'completed' && /*#__PURE__*/React.createElement("div", {
       className: "mt-2.5"
     }, /*#__PURE__*/React.createElement("div", {
       className: "flex"
@@ -2428,10 +2648,10 @@ function ListScreen({
     }, o.completedOn)))), !o.locked && /*#__PURE__*/React.createElement("span", {
       className: "h-4 w-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5"
     }, Icon.chevR));
-  })), empty && /*#__PURE__*/React.createElement("div", {
+  })), (empty || gradingOnly && tab === 'progress') && /*#__PURE__*/React.createElement("div", {
     className: "shrink-0 border-t border-border px-5 pt-3 pb-5"
   }, /*#__PURE__*/React.createElement("a", {
-    href: "https://www.hobbyxmarketplace.com",
+    href: "https://hobbyxstore.com/pages/hobbyx-grading-submission-services",
     target: "_blank",
     rel: "noopener noreferrer",
     className: "flex h-12 items-center justify-center gap-2 rounded-md bg-primary text-[15px] font-bold text-primary-foreground transition-colors hover:bg-primary/90 active:scale-[.99]"
@@ -2455,10 +2675,12 @@ function DetailScreen({
   markRevealed
 }) {
   const completed = order.group === 'completed';
+  // Grades become revealable once the order reaches "Grades Ready" (ready → completing → complete)
+  const gradesReady = STEP_INDEX[order.status] >= STEP_INDEX.ready;
   const PREVIEW = 4;
   const previewItems = order.items.slice(0, PREVIEW);
   const moreCount = order.itemCount - previewItems.length;
-  const canViewAll = !(completed && !revealed);
+  const canViewAll = !(gradesReady && !revealed);
   const imagesReady = order.items.some(it => it.grade || it.img || it.slab);
   const [tip, setTip] = useStateG(false);
   const [confirmSkip, setConfirmSkip] = useStateG(false);
@@ -2481,13 +2703,27 @@ function DetailScreen({
   const daysEarly = _cd && _ed ? Math.round((_ed - _cd) / 86400000) : 0;
   const aheadOfSchedule = completed && daysEarly > 0;
   const behind = !completed && !order.locked && _ed && _ed < TODAY;
+  // move the service name into the header once it scrolls out of view
+  const detailScrollRef = React.useRef(null);
+  const [showHdrTitle, setShowHdrTitle] = useStateG(false);
+  const onDetailScroll = () => {
+    const el = detailScrollRef.current;
+    if (el) setShowHdrTitle(el.scrollTop > 30);
+  };
   return /*#__PURE__*/React.createElement("div", {
     className: "flex h-full flex-col bg-background"
   }, /*#__PURE__*/React.createElement(AppBar, {
     onBack: goBack,
-    title: ""
+    title: /*#__PURE__*/React.createElement("span", {
+      style: {
+        opacity: showHdrTitle ? 1 : 0,
+        transition: 'opacity .2s ease'
+      }
+    }, tx(order.service))
   }), /*#__PURE__*/React.createElement("div", {
-    className: "no-scrollbar flex-1 overflow-y-auto px-5 pb-8"
+    className: "no-scrollbar flex-1 overflow-y-auto px-5 pb-8",
+    ref: detailScrollRef,
+    onScroll: onDetailScroll
   }, /*#__PURE__*/React.createElement("h1", {
     className: "text-[26px] font-extrabold leading-tight tracking-tight text-foreground"
   }, tx(order.service)), /*#__PURE__*/React.createElement("div", {
@@ -2552,7 +2788,7 @@ function DetailScreen({
   }, tx('Your items are currently being reviewed and will appear here soon.'))) : /*#__PURE__*/React.createElement("div", {
     className: "no-scrollbar -mx-5 flex items-stretch gap-2.5 overflow-x-auto px-5 pb-1"
   }, previewItems.map((it, i) => {
-    const blurred = completed && !revealed;
+    const blurred = gradesReady && !revealed;
     return /*#__PURE__*/React.createElement("button", {
       key: it.cert,
       onClick: handleViewAll,
@@ -2578,7 +2814,7 @@ function DetailScreen({
     className: "text-[10px] font-semibold text-muted-foreground"
   }, tx('more'))), /*#__PURE__*/React.createElement("div", {
     className: "w-1 shrink-0"
-  }))), completed && /*#__PURE__*/React.createElement(Button, {
+  }))), gradesReady && /*#__PURE__*/React.createElement(Button, {
     variant: "dark",
     className: "mt-5 w-full",
     onClick: startReveal
@@ -2655,7 +2891,9 @@ function ItemsScreen({
     className: "mt-1 text-sm font-bold text-foreground"
   }, it.grade, " ", /*#__PURE__*/React.createElement("span", {
     className: "font-semibold text-muted-foreground"
-  }, "\xB7 ", it.sub.replace(/\s*\d+$/, ''))) : /*#__PURE__*/React.createElement(Badge, {
+  }, "\xB7 ", it.sub.replace(/\s*\d+$/, '')), it.auto ? /*#__PURE__*/React.createElement("span", {
+    className: "font-semibold text-muted-foreground"
+  }, " \xB7 ", it.auto) : null) : /*#__PURE__*/React.createElement(Badge, {
     intent: "neutral",
     className: "mt-1.5"
   }, tx(order.group === 'completed' ? 'Shipping to you' : 'In grading'))), /*#__PURE__*/React.createElement("span", {
@@ -2674,6 +2912,7 @@ function CardDetail({
     item: item,
     big: true,
     face: "front",
+    hideNotes: true,
     className: "h-full w-full shadow-md",
     radius: 0
   }) : /*#__PURE__*/React.createElement(CardImage, {
@@ -2698,7 +2937,20 @@ function CardDetail({
     className: "flex h-full flex-col bg-background"
   }, /*#__PURE__*/React.createElement(AppBar, {
     onBack: close,
-    title: '#' + item.cert
+    title: graded && item.cert ? /*#__PURE__*/React.createElement("button", {
+      onClick: () => {
+        const a = document.createElement('a');
+        a.href = 'https://www.psacard.com/cert/' + item.cert + '/psa';
+        a.target = '_blank';
+        a.rel = 'noopener noreferrer';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      },
+      className: "inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-[15px] font-bold text-primary underline decoration-primary/40 decoration-1 underline-offset-[3px] transition-colors active:bg-primary/20"
+    }, '#' + item.cert, /*#__PURE__*/React.createElement("span", {
+      className: "h-3.5 w-3.5"
+    }, Icon.external)) : '#' + item.cert
   }), /*#__PURE__*/React.createElement("div", {
     className: "no-scrollbar flex-1 overflow-y-auto px-5 pb-8"
   }, /*#__PURE__*/React.createElement("div", {
@@ -2734,12 +2986,30 @@ function CardDetail({
   }, tx(v)))), /*#__PURE__*/React.createElement("h1", {
     className: "mt-5 text-center text-lg font-bold leading-snug text-foreground"
   }, tx(item.name)), graded && /*#__PURE__*/React.createElement("div", {
-    className: "mt-3 flex items-center justify-center gap-3 rounded-lg border border-border bg-card p-4"
+    className: "mt-3 flex items-stretch justify-center gap-2.5"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "text-2xl font-extrabold text-foreground"
+    className: "flex flex-1 flex-col items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-3 py-4 text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+  }, tx('Card Grade')), /*#__PURE__*/React.createElement("div", {
+    className: "text-[28px] font-extrabold leading-none text-foreground"
   }, item.grade), /*#__PURE__*/React.createElement("div", {
-    className: "text-sm font-semibold text-muted-foreground"
-  }, item.sub.replace(/\s*\d+$/, ''))))));
+    className: "text-[12px] font-semibold uppercase tracking-wide text-muted-foreground"
+  }, item.sub.replace(/\s*\d+$/, ''))), item.auto && /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-1 flex-col items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-3 py-4 text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+  }, tx('Autograph')), /*#__PURE__*/React.createElement("div", {
+    className: "text-[28px] font-extrabold leading-none text-foreground"
+  }, item.auto.replace(/AUTO\s*/i, '')), /*#__PURE__*/React.createElement("div", {
+    className: "text-[12px] font-semibold uppercase tracking-wide text-muted-foreground"
+  }, tx('PSA/DNA')))), graded && item.notes && /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 rounded-lg border border-border bg-card p-4 text-left"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mb-2 text-[11px] font-bold uppercase tracking-wider text-foreground"
+  }, tx('Grader Notes')), /*#__PURE__*/React.createElement("p", {
+    className: "text-[13px] font-medium leading-relaxed text-muted-foreground"
+  }, item.notes)))));
 }
 
 /* ---------- GRADE REVEAL ---------- */
@@ -3058,6 +3328,10 @@ function GradeReveal({
     className: "gr-hint"
   }, tx('Tap to open')), /*#__PURE__*/React.createElement("div", {
     className: "gr-info"
+  }, item.auto ? /*#__PURE__*/React.createElement("div", {
+    className: "gr-grades"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gr-gradecol"
   }, /*#__PURE__*/React.createElement("div", {
     className: "gr-gradeline"
   }, /*#__PURE__*/React.createElement("span", {
@@ -3066,7 +3340,27 @@ function GradeReveal({
     className: "gr-grade"
   }, num)), /*#__PURE__*/React.createElement("div", {
     className: "gr-sub"
-  }, item.sub.replace(/\s*\d+$/, '')), /*#__PURE__*/React.createElement("div", {
+  }, item.sub.replace(/\s*\d+$/, ''))), /*#__PURE__*/React.createElement("div", {
+    className: "gr-gdiv"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "gr-gradecol"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "gr-gradeline"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "gr-psa"
+  }, "AUTO"), /*#__PURE__*/React.createElement("span", {
+    className: "gr-grade"
+  }, item.auto.replace(/AUTO\s*/i, ''))), /*#__PURE__*/React.createElement("div", {
+    className: "gr-sub"
+  }, tx('PSA/DNA')))) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "gr-gradeline"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "gr-psa"
+  }, "PSA"), /*#__PURE__*/React.createElement("span", {
+    className: "gr-grade"
+  }, num)), /*#__PURE__*/React.createElement("div", {
+    className: "gr-sub"
+  }, item.sub.replace(/\s*\d+$/, ''))), /*#__PURE__*/React.createElement("div", {
     className: "gr-name"
   }, tx(item.name)), /*#__PURE__*/React.createElement("button", {
     className: "gr-cta",
@@ -3217,14 +3511,171 @@ function NotificationsScreen({
 }
 
 /* ---------- ACCOUNT ---------- */
+function DelSk({
+  c
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: 'animate-pulse rounded bg-muted ' + (c || '')
+  });
+}
+function DeleteActivitySkeleton() {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-section rounded-lg border border-amber-400/40 bg-amber-400/[0.08] p-3"
+  }, /*#__PURE__*/React.createElement(DeleteSectionLabel, null, tx('Active activity')), /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-activity"
+  }, [0, 1].map(i => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "delete-account-activity__item"
+  }, /*#__PURE__*/React.createElement(DelSk, {
+    c: "h-8 w-8 shrink-0 rounded-full"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0 flex-1"
+  }, /*#__PURE__*/React.createElement(DelSk, {
+    c: "h-3.5 w-4/5 rounded"
+  }), /*#__PURE__*/React.createElement(DelSk, {
+    c: "mt-2 h-3 w-full rounded"
+  }))))), /*#__PURE__*/React.createElement(DelSk, {
+    c: "mt-2.5 h-3 w-2/3 rounded"
+  }));
+}
+function DeleteConfirmSkeleton({
+  rows = 2
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-section"
+  }, /*#__PURE__*/React.createElement(DeleteSectionLabel, {
+    spacious: true
+  }, tx('Confirm you understand')), /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-acks"
+  }, Array.from({
+    length: rows
+  }, (_, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "delete-account-ack pointer-events-none"
+  }, /*#__PURE__*/React.createElement(DelSk, {
+    c: "h-4 w-4 shrink-0 rounded"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0 flex-1"
+  }, /*#__PURE__*/React.createElement(DelSk, {
+    c: "h-3.5 w-2/5 rounded"
+  }), /*#__PURE__*/React.createElement(DelSk, {
+    c: "mt-2 h-3 w-full rounded"
+  }))))));
+}
+function DeleteSectionLabel({
+  children,
+  spacious = false
+}) {
+  return /*#__PURE__*/React.createElement("p", {
+    className: 'text-[11px] font-bold uppercase tracking-wide text-muted-foreground ' + (spacious ? 'mb-3' : 'mb-2')
+  }, children);
+}
+function DeleteActivityItem({
+  icon,
+  title,
+  detail,
+  clear = false
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-activity__item"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: 'delete-account-activity__icon' + (clear ? ' delete-account-activity__icon--clear' : '')
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "h-4 w-4"
+  }, icon)), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[13px] font-bold leading-snug text-foreground"
+  }, title), /*#__PURE__*/React.createElement("p", {
+    className: "mt-0.5 text-[12px] font-medium leading-snug text-muted-foreground"
+  }, detail)));
+}
+function DeleteAckRow({
+  checked,
+  onChange,
+  title,
+  children
+}) {
+  return /*#__PURE__*/React.createElement("label", {
+    className: "delete-account-ack"
+  }, /*#__PURE__*/React.createElement("input", {
+    type: "checkbox",
+    checked: checked,
+    onChange: e => onChange(e.target.checked)
+  }), /*#__PURE__*/React.createElement("span", {
+    className: "min-w-0"
+  }, title ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("span", {
+    className: "delete-account-ack__title"
+  }, title), children && /*#__PURE__*/React.createElement("span", {
+    className: "delete-account-ack__detail"
+  }, children)) : /*#__PURE__*/React.createElement("span", {
+    className: "delete-account-ack__title"
+  }, children)));
+}
 function AccountScreen({
   goBack,
   theme,
   setTheme,
   onSignOut,
-  openAccountInfo
+  openAccountInfo,
+  onDeleteAccount,
+  emptyActivity = false,
+  autoOpenDelete = false,
+  onAutoOpenDeleteHandled,
+  skeleton = false
 }) {
   const [notif, setNotif] = useStateG(true);
+  const [showPolicies, setShowPolicies] = useStateG(false);
+  const POLICIES = [['Privacy Policy', 'https://hobbyxmarketplace.com/privacy-policy/'], ['Terms of Use', 'https://hobbyxmarketplace.com/terms-and-conditions/'], ['Shipping Policy', 'https://hobbyxmarketplace.com/shipping-policy/']];
+  const openExt = url => {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+  const [confirmDelete, setConfirmDelete] = useStateG(false);
+  const [ackSubmissions, setAckSubmissions] = useStateG(false);
+  const [ackListings, setAckListings] = useStateG(false);
+  const [ackGeneral, setAckGeneral] = useStateG(false);
+  const [deleteActivityLoading, setDeleteActivityLoading] = useStateG(false);
+  const inProgressCount = emptyActivity ? 0 : ORDERS.filter(o => o.group === 'progress').length;
+  const listingCount = emptyActivity ? 0 : ACCOUNT.marketplaceListings || 0;
+  const hasSubmissions = inProgressCount > 0;
+  const hasListings = listingCount > 0;
+  const hasActiveRisks = hasSubmissions || hasListings;
+  const canDelete = !deleteActivityLoading && (hasActiveRisks ? (!hasSubmissions || ackSubmissions) && (!hasListings || ackListings) : ackGeneral);
+  React.useEffect(() => {
+    if (!autoOpenDelete) return;
+    setAckSubmissions(false);
+    setAckListings(false);
+    setAckGeneral(false);
+    setConfirmDelete(true);
+    onAutoOpenDeleteHandled && onAutoOpenDeleteHandled();
+  }, [autoOpenDelete]);
+  React.useEffect(() => {
+    if (!confirmDelete || !skeleton) {
+      setDeleteActivityLoading(false);
+      return;
+    }
+    setDeleteActivityLoading(true);
+    const t = setTimeout(() => setDeleteActivityLoading(false), 2000);
+    return () => clearTimeout(t);
+  }, [confirmDelete, skeleton]);
+  const closeDelete = () => {
+    setConfirmDelete(false);
+    setAckSubmissions(false);
+    setAckListings(false);
+    setAckGeneral(false);
+  };
+  const openDeleteConfirm = () => {
+    setAckSubmissions(false);
+    setAckListings(false);
+    setAckGeneral(false);
+    setConfirmDelete(true);
+  };
   return /*#__PURE__*/React.createElement("div", {
     className: "flex h-full flex-col bg-background"
   }, /*#__PURE__*/React.createElement(AppBar, {
@@ -3237,31 +3688,33 @@ function AccountScreen({
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex h-16 w-16 items-center justify-center rounded-full bg-primary text-xl font-bold text-primary-foreground"
   }, ACCOUNT.initials), /*#__PURE__*/React.createElement("div", {
-    className: "min-w-0"
+    className: "flex min-w-0 flex-col justify-center gap-0.5"
   }, /*#__PURE__*/React.createElement("div", {
     className: "text-xl font-extrabold tracking-tight text-foreground"
   }, ACCOUNT.name), /*#__PURE__*/React.createElement("div", {
-    className: "text-sm font-medium text-muted-foreground"
-  }, ACCOUNT.handle), /*#__PURE__*/React.createElement("div", {
-    className: "mt-0.5 text-xs font-medium text-muted-foreground/80"
-  }, tx(ACCOUNT.member)))), ACCOUNT.groups.map((grp, gi) => /*#__PURE__*/React.createElement("div", {
-    key: gi,
+    className: "text-xs font-medium text-muted-foreground/80"
+  }, tx(ACCOUNT.member)))), ACCOUNT.groups.map((grp, gi) => /*#__PURE__*/React.createElement(React.Fragment, {
+    key: gi
+  }, /*#__PURE__*/React.createElement("div", {
     className: "mt-6"
   }, /*#__PURE__*/React.createElement("div", {
     className: "mb-2 px-1 text-xs font-bold uppercase tracking-wide text-muted-foreground"
   }, tx(grp.group)), /*#__PURE__*/React.createElement("div", {
     className: "overflow-hidden rounded-lg border border-border bg-card"
   }, grp.items.map(([label, ic], ii) => {
+    const isDelete = label === 'Delete Account';
     const danger = label === 'Sign Out';
     const isAppearance = label === 'Appearance';
     const isLanguage = label === 'Language';
     const isNotifications = label === 'Notifications';
     const isControl = isAppearance || isLanguage || isNotifications;
-    const onRow = label === 'Account Info' ? openAccountInfo : danger ? onSignOut : undefined;
+    const isHelp = label === 'Help Centre';
+    const isPolicies = label === 'Terms & Policies';
+    const onRow = label === 'Account Info' ? openAccountInfo : isHelp ? () => openExt('https://hobbyxmarketplace.com/faq/') : isPolicies ? () => setShowPolicies(v => !v) : isDelete ? openDeleteConfirm : danger ? onSignOut : undefined;
     const rowInner = /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("span", {
-      className: 'flex items-center gap-3 text-[15px] font-semibold ' + (danger ? 'text-primary' : 'text-foreground')
+      className: 'flex items-center gap-3 text-[15px] font-semibold ' + (isDelete ? 'text-red-600 dark:text-red-500' : danger ? 'text-primary' : 'text-foreground')
     }, /*#__PURE__*/React.createElement("span", {
-      className: "h-[18px] w-[18px] text-muted-foreground"
+      className: 'h-[18px] w-[18px] ' + (isDelete ? 'text-red-600 dark:text-red-500' : 'text-muted-foreground')
     }, Icon[ic]), tx(label)), isAppearance ? /*#__PURE__*/React.createElement("div", {
       className: "inline-flex items-center rounded-md bg-muted p-0.5"
     }, [['light', 'Light'], ['dark', 'Dark']].map(([k, l]) => /*#__PURE__*/React.createElement("button", {
@@ -3271,19 +3724,125 @@ function AccountScreen({
     }, tx(l)))) : isLanguage ? /*#__PURE__*/React.createElement(LangToggle, null) : isNotifications ? /*#__PURE__*/React.createElement(Switch, {
       checked: notif,
       onChange: setNotif
-    }) : !danger && /*#__PURE__*/React.createElement("span", {
-      className: "h-4 w-4 text-muted-foreground"
-    }, Icon.chevR));
+    }) : !danger && !isDelete && /*#__PURE__*/React.createElement("span", {
+      className: 'h-4 w-4 text-muted-foreground transition-transform ' + (isPolicies && showPolicies ? 'rotate-90' : '')
+    }, isHelp ? Icon.external : Icon.chevR));
     const rowCls = 'flex w-full items-center justify-between px-4 py-3.5 ' + (ii > 0 ? 'border-t border-border' : '');
-    return isControl ? /*#__PURE__*/React.createElement("div", {
+    if (isControl) return /*#__PURE__*/React.createElement("div", {
       key: ii,
       className: rowCls
-    }, rowInner) : /*#__PURE__*/React.createElement("button", {
-      key: ii,
+    }, rowInner);
+    return /*#__PURE__*/React.createElement(React.Fragment, {
+      key: ii
+    }, /*#__PURE__*/React.createElement("button", {
       onClick: onRow,
       className: rowCls + ' text-left transition-colors hover:bg-accent/40'
-    }, rowInner);
-  }))))));
+    }, rowInner), isPolicies && showPolicies && /*#__PURE__*/React.createElement("div", {
+      className: "border-t border-border bg-muted/40"
+    }, POLICIES.map(([plabel, purl]) => /*#__PURE__*/React.createElement("button", {
+      key: plabel,
+      onClick: () => openExt(purl),
+      className: "flex w-full items-center justify-between py-2.5 pl-12 pr-4 text-left transition-colors hover:bg-accent/40"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "text-[14px] font-medium text-muted-foreground"
+    }, tx(plabel)), /*#__PURE__*/React.createElement("span", {
+      className: "h-3.5 w-3.5 text-muted-foreground/70"
+    }, Icon.external)))));
+  }))), grp.group === 'Preferences' && /*#__PURE__*/React.createElement("div", {
+    className: "mt-6"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "mb-2 px-1 text-xs font-bold uppercase tracking-wide text-muted-foreground"
+  }, tx('Contact Us')), /*#__PURE__*/React.createElement("div", {
+    className: "overflow-hidden rounded-lg border border-border bg-card"
+  }, [['Facebook', 'facebook', 'https://www.facebook.com/HobbyXStore', '@HobbyXStore'], ['Instagram', 'instagram', 'https://www.instagram.com/hobbyxmarketplace', '@hobbyxmarketplace']].map(([label, ic, url, handle], si) => /*#__PURE__*/React.createElement("button", {
+    key: label,
+    onClick: () => openExt(url),
+    className: 'flex w-full items-center justify-between px-4 py-3.5 text-left transition-colors hover:bg-accent/40 ' + (si > 0 ? 'border-t border-border' : '')
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "flex items-center gap-3 text-[15px] font-semibold text-foreground"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "h-[18px] w-[18px] text-muted-foreground"
+  }, Icon[ic]), tx(label)), /*#__PURE__*/React.createElement("span", {
+    className: "text-[13px] font-medium text-muted-foreground"
+  }, handle))))))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-7 flex flex-col items-center gap-4 border-t border-border pt-5"
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "whitespace-nowrap text-center text-[11px] font-medium text-muted-foreground/80"
+  }, "\xA9 2025 HobbyX Marketplace Limited. ", tx('All Rights Reserved')))), confirmDelete && /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 z-40 flex items-end justify-center overflow-hidden bg-black/50 p-4",
+    onClick: closeDelete
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-sheet rounded-2xl bg-card shadow-xl",
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-sheet__header"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-500"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "h-[22px] w-[22px]"
+  }, Icon.trash)), /*#__PURE__*/React.createElement("h2", {
+    className: "text-lg font-extrabold leading-tight text-foreground"
+  }, tx('Delete your account?'))), /*#__PURE__*/React.createElement("p", {
+    className: "mt-1.5 text-[14px] font-semibold leading-snug text-foreground"
+  }, tx('This is permanent and cannot be undone.'))), /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-sheet__body no-scrollbar"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-section"
+  }, /*#__PURE__*/React.createElement(DeleteSectionLabel, null, tx('What will be deleted')), /*#__PURE__*/React.createElement("p", {
+    className: "text-[13px] font-medium leading-relaxed text-muted-foreground"
+  }, tx('Profile, saved cards, preferences, and other personal data linked to your account.'))), /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-note"
+  }, /*#__PURE__*/React.createElement(DeleteSectionLabel, null, tx('Data we may retain')), /*#__PURE__*/React.createElement("p", {
+    className: "text-[12px] font-medium leading-relaxed text-muted-foreground"
+  }, tx('Transaction records required for legal, tax, or accounting purposes. Not used for marketing.'))), deleteActivityLoading ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DeleteActivitySkeleton, null), /*#__PURE__*/React.createElement(DeleteConfirmSkeleton, null)) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-section rounded-lg border border-amber-400/40 bg-amber-400/[0.08] p-3"
+  }, /*#__PURE__*/React.createElement(DeleteSectionLabel, null, tx('Active activity')), /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-activity"
+  }, /*#__PURE__*/React.createElement(DeleteActivityItem, {
+    icon: hasSubmissions ? Icon.layers : Icon.check,
+    clear: !hasSubmissions,
+    title: hasSubmissions ? inProgressCount + ' ' + tx(inProgressCount === 1 ? 'grading submission in progress' : 'grading submissions in progress') : tx('No grading submissions in progress'),
+    detail: hasSubmissions ? tx('You will lose access to tracking and submission details.') : tx('You have no submissions currently being processed.')
+  }), /*#__PURE__*/React.createElement(DeleteActivityItem, {
+    icon: hasListings ? Icon.doc : Icon.check,
+    clear: !hasListings,
+    title: hasListings ? listingCount + ' ' + tx(listingCount === 1 ? 'card on HobbyX Marketplace' : 'cards on HobbyX Marketplace') : tx('No marketplace listings'),
+    detail: hasListings ? tx('Listings will be removed and sale information will no longer be accessible.') : tx('You have no cards listed for sale on HobbyX Marketplace.')
+  })), /*#__PURE__*/React.createElement("p", {
+    className: "mt-2.5 text-[12px] font-semibold leading-snug text-foreground"
+  }, tx(hasActiveRisks ? 'Please resolve these before deleting your account.' : 'You can proceed once you confirm below.'))), /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-section"
+  }, /*#__PURE__*/React.createElement(DeleteSectionLabel, {
+    spacious: true
+  }, tx('Confirm you understand')), /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-acks"
+  }, hasSubmissions && /*#__PURE__*/React.createElement(DeleteAckRow, {
+    checked: ackSubmissions,
+    onChange: setAckSubmissions,
+    title: tx('Grading submissions')
+  }, tx('I accept responsibility for any loss of access to in-progress submission data.')), hasListings && /*#__PURE__*/React.createElement(DeleteAckRow, {
+    checked: ackListings,
+    onChange: setAckListings,
+    title: tx('Marketplace listings')
+  }, tx('I accept responsibility for removing listings and completing active sales first.')), !hasActiveRisks && /*#__PURE__*/React.createElement(DeleteAckRow, {
+    checked: ackGeneral,
+    onChange: setAckGeneral,
+    title: tx('Permanent deletion')
+  }, tx('I understand this permanently deletes my account and cannot be undone.')))))), /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-sheet__actions"
+  }, /*#__PURE__*/React.createElement("button", {
+    disabled: !canDelete,
+    onClick: () => {
+      closeDelete();
+      onDeleteAccount && onDeleteAccount();
+    },
+    className: "flex h-12 w-full items-center justify-center rounded-md bg-red-600 text-[15px] font-bold text-white transition-colors hover:bg-red-700 active:scale-[.99] disabled:pointer-events-none disabled:opacity-50"
+  }, tx('Delete account')), /*#__PURE__*/React.createElement("button", {
+    onClick: closeDelete,
+    className: "flex h-12 w-full items-center justify-center rounded-md text-[15px] font-bold text-foreground transition-colors hover:bg-accent active:scale-[.99]"
+  }, tx('Cancel'))))));
 }
 
 /* ---------- ACCOUNT INFO (editable form) ---------- */
@@ -3353,6 +3912,8 @@ function AccountInfoScreen({
     first: i.first,
     last: i.last,
     email: i.email,
+    phone: (i.phone || '').replace(/^\+\d+\s*/, ''),
+    phoneCountry: 'HK',
     cur: '',
     npw: '',
     cpw: '',
@@ -3391,7 +3952,7 @@ function AccountInfoScreen({
     onChange: e => set('last')(e.target.value),
     className: acInputCls
   }))), /*#__PURE__*/React.createElement("div", {
-    className: "mt-3 grid grid-cols-2 gap-3"
+    className: "mt-3"
   }, /*#__PURE__*/React.createElement(AcField, {
     label: tx('Email address')
   }, /*#__PURE__*/React.createElement("input", {
@@ -3400,12 +3961,15 @@ function AccountInfoScreen({
     onChange: e => set('email')(e.target.value),
     autoCapitalize: "none",
     className: acInputCls
-  })), /*#__PURE__*/React.createElement(AcField, {
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-3"
+  }, /*#__PURE__*/React.createElement(AcField, {
     label: tx('Phone Number')
-  }, /*#__PURE__*/React.createElement("input", {
-    value: i.phone,
-    disabled: true,
-    className: acInputCls + ' cursor-not-allowed bg-muted text-muted-foreground'
+  }, /*#__PURE__*/React.createElement(PhoneInput, {
+    country: f.phoneCountry,
+    onCountry: set('phoneCountry'),
+    value: f.phone,
+    onChange: set('phone')
   }))), /*#__PURE__*/React.createElement("div", {
     className: "mt-7 border-b border-border pb-2 text-base font-bold text-foreground"
   }, tx('Password change')), /*#__PURE__*/React.createElement("div", {
@@ -3449,6 +4013,275 @@ function AccountInfoScreen({
 
 /* ---------- NOTIFICATIONS ---------- */
 
+/* ---------- LOADING SKELETON ---------- */
+/* Shown for ~2s whenever a page is opened while the "Loading" phase is active.
+   `variant` mirrors the layout of the screen that is loading so the skeleton
+   matches what's about to appear (header, content blocks) with pulsing placeholders. */
+function SkBlock({
+  c,
+  style
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: 'animate-pulse rounded bg-muted ' + (c || ''),
+    style: style
+  });
+}
+/* Stacked-screen app bar during loading: real back chevron + (real title when static). */
+function SkAppBar({
+  title
+}) {
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-1 px-3 py-2"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "relative inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-muted-foreground"
+  }, Icon.chevL), /*#__PURE__*/React.createElement("div", {
+    className: "flex flex-1 justify-center"
+  }, title ? /*#__PURE__*/React.createElement("span", {
+    className: "truncate text-[17px] font-bold text-foreground"
+  }, title) : /*#__PURE__*/React.createElement(SkBlock, {
+    c: "h-4 w-32 rounded"
+  })), /*#__PURE__*/React.createElement("div", {
+    className: "w-10"
+  }));
+}
+function SkeletonScreen({
+  variant = 'list'
+}) {
+  /* ---- LIST ---- */
+  if (variant === 'list') {
+    const SkRow = () => /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-4 rounded-lg border border-border bg-[#F5F6F8] p-3 dark:bg-card"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-[84px] w-[60px] shrink-0 rounded-md"
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "min-w-0 flex-1"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-3.5 w-2/3 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2 h-3 w-2/5 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-3 h-5 w-24 rounded-full"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2.5 h-[3px] w-full rounded-full"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2.5 h-3 w-1/2 rounded"
+    })));
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex h-full flex-col bg-background",
+      "aria-busy": "true"
+    }, /*#__PURE__*/React.createElement("header", {
+      className: "flex items-center justify-between px-5 pt-2 pb-4"
+    }, /*#__PURE__*/React.createElement("h1", {
+      className: "text-2xl font-extrabold tracking-tight text-foreground"
+    }, tx('Grading Orders')), /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center gap-2"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "relative inline-flex h-10 w-10 items-center justify-center rounded-full text-muted-foreground"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "h-5 w-5"
+    }, Icon.bell)), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-10 w-10 rounded-full"
+    }))), /*#__PURE__*/React.createElement(Tabs, {
+      value: "progress",
+      onChange: () => {},
+      tabs: TABS_WITH_COUNTS
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "px-5 pb-3"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "relative flex items-center"
+    }, /*#__PURE__*/React.createElement("span", {
+      className: "pointer-events-none absolute left-3 h-4 w-4 text-muted-foreground"
+    }, Icon.search), /*#__PURE__*/React.createElement("input", {
+      disabled: true,
+      placeholder: tx('Search by service name'),
+      className: "h-10 w-full rounded-md border border-input bg-background pl-9 pr-3 text-sm font-medium text-foreground placeholder:font-normal placeholder:text-muted-foreground"
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "mt-2.5 flex gap-2"
+    }, /*#__PURE__*/React.createElement(FilterBtn, {
+      icon: Icon.sort,
+      label: tx(SORTS.find(s => s.key === 'newest').short),
+      active: false,
+      open: false,
+      onClick: () => {}
+    }), /*#__PURE__*/React.createElement(FilterBtn, {
+      icon: Icon.sliders,
+      label: tx('Status'),
+      active: false,
+      open: false,
+      onClick: () => {}
+    }))), /*#__PURE__*/React.createElement("div", {
+      className: "no-scrollbar flex-1 space-y-2.5 overflow-y-auto px-5 pb-8"
+    }, /*#__PURE__*/React.createElement(SkRow, null), /*#__PURE__*/React.createElement(SkRow, null), /*#__PURE__*/React.createElement(SkRow, null), /*#__PURE__*/React.createElement(SkRow, null)));
+  }
+
+  /* ---- DETAIL ---- */
+  if (variant === 'detail') {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex h-full flex-col bg-background",
+      "aria-busy": "true"
+    }, /*#__PURE__*/React.createElement(SkAppBar, null), /*#__PURE__*/React.createElement("div", {
+      className: "no-scrollbar flex-1 overflow-y-auto px-5 pb-8"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-7 w-3/4 rounded-md"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2.5 h-4 w-2/5 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2 h-3 w-1/4 rounded"
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "mt-4 grid grid-cols-2 gap-3 rounded-lg border border-border p-4"
+    }, /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-3 w-4/5 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2 h-4 w-1/2 rounded"
+    })), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-3 w-4/5 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2 h-4 w-1/2 rounded"
+    }))), /*#__PURE__*/React.createElement("div", {
+      className: "mt-6 flex items-center justify-between"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-4 w-20 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-4 w-16 rounded"
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "mt-3 flex gap-2.5"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-[92px] w-[66px] rounded-md"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-[92px] w-[66px] rounded-md"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-[92px] w-[66px] rounded-md"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-[92px] w-[66px] rounded-md"
+    })), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-7 h-4 w-16 rounded"
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "mt-3 space-y-4"
+    }, [0, 1, 2, 3].map(i => /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "flex items-center gap-3"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-8 w-8 shrink-0 rounded-full"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-3.5 w-1/2 rounded"
+    }))))));
+  }
+
+  /* ---- ITEMS ---- */
+  if (variant === 'items') {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex h-full flex-col bg-background",
+      "aria-busy": "true"
+    }, /*#__PURE__*/React.createElement(SkAppBar, null), /*#__PURE__*/React.createElement("div", {
+      className: "no-scrollbar flex-1 overflow-y-auto px-5 pb-8"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "space-y-3 pt-1"
+    }, [0, 1, 2, 3, 4].map(i => /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "flex items-center gap-3.5 rounded-lg border border-border p-3"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-[74px] w-[53px] shrink-0 rounded-md"
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "min-w-0 flex-1"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-3 w-1/3 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2 h-3.5 w-4/5 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2 h-4 w-1/2 rounded"
+    })), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-4 w-4 shrink-0 rounded"
+    }))))));
+  }
+
+  /* ---- CARD DETAIL ---- */
+  if (variant === 'card') {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex h-full flex-col bg-background",
+      "aria-busy": "true"
+    }, /*#__PURE__*/React.createElement(SkAppBar, null), /*#__PURE__*/React.createElement("div", {
+      className: "no-scrollbar flex flex-1 flex-col justify-center px-5 pb-8"
+    }, /*#__PURE__*/React.createElement("div", {
+      className: "flex items-center justify-center rounded-xl border border-border p-7"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "rounded-lg",
+      style: {
+        width: '72%',
+        aspectRatio: '0.62'
+      }
+    })), /*#__PURE__*/React.createElement("div", {
+      className: "mt-4 flex justify-center gap-2.5"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-7 w-16 rounded-md"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-7 w-16 rounded-md"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-7 w-16 rounded-md"
+    })), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mx-auto mt-5 h-5 w-1/2 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mx-auto mt-3 h-16 w-2/3 rounded-lg"
+    })));
+  }
+
+  /* ---- NOTIFICATIONS ---- */
+  if (variant === 'notifs') {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "flex h-full flex-col bg-background",
+      "aria-busy": "true"
+    }, /*#__PURE__*/React.createElement(SkAppBar, {
+      title: tx('Notifications')
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "no-scrollbar flex-1 overflow-y-auto"
+    }, [0, 1, 2, 3, 4].map(i => /*#__PURE__*/React.createElement("div", {
+      key: i,
+      className: "flex items-start gap-3.5 border-b border-border px-5 py-4"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-10 w-10 shrink-0 rounded-lg"
+    }), /*#__PURE__*/React.createElement("div", {
+      className: "min-w-0 flex-1"
+    }, /*#__PURE__*/React.createElement(SkBlock, {
+      c: "h-3.5 w-2/5 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2 h-3 w-4/5 rounded"
+    }), /*#__PURE__*/React.createElement(SkBlock, {
+      c: "mt-2 h-3 w-1/4 rounded"
+    }))))));
+  }
+
+  /* ---- ACCOUNT / ACCOUNT INFO ---- */
+  return /*#__PURE__*/React.createElement("div", {
+    className: "flex h-full flex-col bg-background",
+    "aria-busy": "true"
+  }, /*#__PURE__*/React.createElement(SkAppBar, {
+    title: tx('Account')
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "no-scrollbar flex-1 overflow-y-auto px-5 pb-8"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-4 rounded-lg border border-border p-4"
+  }, /*#__PURE__*/React.createElement(SkBlock, {
+    c: "h-16 w-16 shrink-0 rounded-full"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "min-w-0 flex-1"
+  }, /*#__PURE__*/React.createElement(SkBlock, {
+    c: "h-5 w-2/5 rounded"
+  }), /*#__PURE__*/React.createElement(SkBlock, {
+    c: "mt-2.5 h-3.5 w-3/5 rounded"
+  }))), /*#__PURE__*/React.createElement("div", {
+    className: "mt-6 space-y-3"
+  }, [0, 1, 2, 3, 4].map(i => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    className: "flex items-center justify-between rounded-lg border border-border px-4 py-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center gap-3"
+  }, /*#__PURE__*/React.createElement(SkBlock, {
+    c: "h-5 w-5 rounded"
+  }), /*#__PURE__*/React.createElement(SkBlock, {
+    c: "h-3.5 w-28 rounded"
+  })), /*#__PURE__*/React.createElement(SkBlock, {
+    c: "h-4 w-4 rounded"
+  }))))));
+}
 Object.assign(window, {
   ListScreen,
   DetailScreen,
@@ -3457,7 +4290,8 @@ Object.assign(window, {
   GradeReveal,
   NotificationsScreen,
   AccountScreen,
-  AccountInfoScreen
+  AccountInfoScreen,
+  SkeletonScreen
 });
 
 /* ===== app2/auth.jsx ===== */
@@ -3550,17 +4384,85 @@ function VolkCredit({
 function Legal({
   go
 }) {
+  const openExt = url => {
+    const a = document.createElement('a');
+    a.href = url;
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+  const [pending, setPending] = useAuthState(null); // { label, url }
+  const links = [{
+    label: 'Privacy Policy',
+    url: 'https://hobbyxmarketplace.com/privacy-policy/'
+  }, {
+    label: 'Terms of Use',
+    url: 'https://hobbyxmarketplace.com/terms-and-conditions/'
+  }, {
+    label: 'Shipping Policy',
+    url: 'https://hobbyxmarketplace.com/shipping-policy/'
+  }];
+  const host = pending ? new URL(pending.url).host : '';
   return /*#__PURE__*/React.createElement("div", {
-    className: "flex items-center justify-center gap-3 pt-5 text-xs font-semibold text-muted-foreground"
-  }, /*#__PURE__*/React.createElement("button", {
-    onClick: () => go('legal:Privacy Policy'),
-    className: "hover:text-foreground"
-  }, tx('Privacy Policy')), /*#__PURE__*/React.createElement("span", {
-    className: "h-1 w-1 rounded-full bg-muted-foreground/50"
+    className: "mt-7 flex flex-col items-center gap-4 border-t border-border pt-5"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center gap-2.5 text-xs font-semibold text-muted-foreground"
+  }, links.map((l, i) => /*#__PURE__*/React.createElement(React.Fragment, {
+    key: l.label
+  }, i > 0 && /*#__PURE__*/React.createElement("span", {
+    className: "h-1 w-1 shrink-0 rounded-full bg-muted-foreground/50"
   }), /*#__PURE__*/React.createElement("button", {
-    onClick: () => go('legal:Terms of Use'),
-    className: "hover:text-foreground"
-  }, tx('Terms of Use')));
+    onClick: () => setPending(l),
+    className: "whitespace-nowrap hover:text-foreground"
+  }, tx(l.label))))), /*#__PURE__*/React.createElement("div", {
+    className: "flex items-center justify-center gap-3"
+  }, /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => openExt('https://www.facebook.com/HobbyXStore'),
+    "aria-label": "Facebook",
+    className: "flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "h-[18px] w-[18px]"
+  }, Icon.facebook)), /*#__PURE__*/React.createElement("button", {
+    type: "button",
+    onClick: () => openExt('https://www.instagram.com/hobbyxmarketplace'),
+    "aria-label": "Instagram",
+    className: "flex h-8 w-8 items-center justify-center rounded-full bg-secondary text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "h-[18px] w-[18px]"
+  }, Icon.instagram))), /*#__PURE__*/React.createElement("p", {
+    className: "whitespace-nowrap text-center text-[11px] font-medium text-muted-foreground/80"
+  }, "\xA9 2025 HobbyX Marketplace Limited. ", tx('All Rights Reserved')), pending && /*#__PURE__*/React.createElement("div", {
+    className: "fixed inset-0 z-50 flex items-end justify-center bg-black/50 p-4",
+    onClick: () => setPending(null)
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "w-full max-w-[400px] rounded-2xl bg-card p-5 text-left shadow-xl",
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "flex h-11 w-11 items-center justify-center rounded-full bg-secondary text-foreground"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "h-[22px] w-[22px]"
+  }, Icon.external)), /*#__PURE__*/React.createElement("h2", {
+    className: "mt-3.5 text-lg font-extrabold leading-tight text-foreground"
+  }, tx('Leaving HobbyX')), /*#__PURE__*/React.createElement("p", {
+    className: "mt-1.5 text-[13px] font-medium leading-relaxed text-muted-foreground"
+  }, tx('You’ll open the'), " ", tx(pending.label), " ", tx('page on'), " ", /*#__PURE__*/React.createElement("span", {
+    className: "font-semibold text-foreground"
+  }, host), " ", tx('in your browser.')), /*#__PURE__*/React.createElement("div", {
+    className: "mt-5 flex flex-col gap-2.5"
+  }, /*#__PURE__*/React.createElement(Button, {
+    variant: "dark",
+    className: "w-full",
+    onClick: () => {
+      openExt(pending.url);
+      setPending(null);
+    }
+  }, tx('Continue')), /*#__PURE__*/React.createElement("button", {
+    onClick: () => setPending(null),
+    className: "flex h-12 w-full items-center justify-center rounded-md text-[15px] font-bold text-foreground transition-colors hover:bg-accent active:scale-[.99]"
+  }, tx('Cancel'))))));
 }
 
 /* SPLASH */
@@ -4745,7 +5647,10 @@ function GradingApp({
   theme,
   setTheme,
   offline,
-  empty
+  empty,
+  gradingOnly,
+  skeleton,
+  emptyActivity
 }) {
   const [tab, setTab] = useRootState('progress');
   const [stack, setStack] = useRootState([{
@@ -4755,6 +5660,7 @@ function GradingApp({
   const [reveal, setReveal] = useRootState(false);
   const [revealedIds, setRevealedIds] = useRootState([]);
   const [highlightId, setHighlightId] = useRootState(null);
+  const [emptyDeletePreview, setEmptyDeletePreview] = useRootState(false);
   const top = stack[stack.length - 1];
   const order = top.orderId ? ORDERS.find(o => o.id === top.orderId) : null;
   const unread = empty ? 0 : NOTIFICATIONS.filter(n => n.unread).length;
@@ -4768,6 +5674,37 @@ function GradingApp({
     setCard(null);
     setReveal(false);
   };
+  useRootEffect(() => {
+    if (!emptyActivity) {
+      setEmptyDeletePreview(false);
+      return;
+    }
+    setStack([{
+      name: 'list'
+    }, {
+      name: 'account'
+    }]);
+    setEmptyDeletePreview(true);
+  }, [emptyActivity]);
+
+  // "Loading" phase: show a matching skeleton for ~2s every time a page is opened,
+  // then reveal the real screen — all without leaving the Loading tab.
+  const skVariant = card != null ? 'card' : top.name === 'accountinfo' ? 'account' : top.name;
+  const screenKey = skeleton ? card != null ? 'card' : top.name + ':' + (top.orderId || '') + ':' + tab : 'static';
+  const [booting, setBooting] = useRootState(!!skeleton);
+  useRootEffect(() => {
+    if (!skeleton) return;
+    setBooting(true);
+    const t = setTimeout(() => setBooting(false), 2000);
+    return () => clearTimeout(t);
+  }, [screenKey, skeleton]);
+  if (skeleton && booting) {
+    return /*#__PURE__*/React.createElement("div", {
+      className: "relative h-full bg-background"
+    }, /*#__PURE__*/React.createElement(SkeletonScreen, {
+      variant: skVariant
+    }));
+  }
   return /*#__PURE__*/React.createElement("div", {
     className: "relative h-full bg-background"
   }, top.name === 'list' && /*#__PURE__*/React.createElement(ListScreen, {
@@ -4776,6 +5713,7 @@ function GradingApp({
     unread: unread,
     offline: offline,
     empty: empty,
+    gradingOnly: gradingOnly,
     highlightId: highlightId,
     clearHighlight: () => setHighlightId(null),
     openOrder: id => push({
@@ -4812,10 +5750,20 @@ function GradingApp({
     goBack: pop,
     theme: theme,
     setTheme: setTheme,
+    emptyActivity: emptyActivity,
+    autoOpenDelete: emptyDeletePreview,
+    onAutoOpenDeleteHandled: () => setEmptyDeletePreview(false),
+    skeleton: skeleton,
     openAccountInfo: () => push({
       name: 'accountinfo'
     }),
     onSignOut: () => {
+      try {
+        localStorage.removeItem('hobbyx_keep');
+      } catch (e) {}
+      window.location.href = 'index.html';
+    },
+    onDeleteAccount: () => {
       try {
         localStorage.removeItem('hobbyx_keep');
       } catch (e) {}
@@ -4968,7 +5916,7 @@ function App() {
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "inline-flex items-center gap-1 rounded-full bg-white p-1 shadow-md ring-1 ring-black/5"
-  }, [['auth', 'Auth'], ['app', 'Grading'], ['empty', 'Empty Grading']].map(([k, l]) => /*#__PURE__*/React.createElement("button", {
+  }, [['auth', 'Auth'], ['app', 'Grading'], ['empty', 'Empty Grading'], ['gradingonly', 'Only Grading'], ['emptyactivity', 'Empty Activity'], ['loading', 'Loading']].map(([k, l]) => /*#__PURE__*/React.createElement("button", {
     key: k,
     onClick: () => setPhase(k),
     className: 'whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm font-bold transition-colors ' + (phase === k ? 'bg-neutral-900 text-white' : 'text-neutral-500')
@@ -5024,7 +5972,10 @@ function App() {
     theme: theme,
     setTheme: setTheme,
     offline: offline,
-    empty: phase === 'empty'
+    empty: phase === 'empty',
+    gradingOnly: phase === 'gradingonly',
+    skeleton: phase === 'loading',
+    emptyActivity: phase === 'emptyactivity'
   })), /*#__PURE__*/React.createElement(Toaster, null), /*#__PURE__*/React.createElement("div", {
     className: "pointer-events-none absolute bottom-2 left-1/2 z-50 h-[5px] w-[135px] -translate-x-1/2 rounded-full bg-foreground/30"
   })))), /*#__PURE__*/React.createElement(TweaksPanel, null, /*#__PURE__*/React.createElement(TweakSection, {
