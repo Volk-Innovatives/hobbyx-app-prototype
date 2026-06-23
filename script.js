@@ -813,31 +813,19 @@ const ZH = {
   'HobbyX member since 2023': '自 2023 年起成為 HobbyX 會員',
   'Delete your account?': '刪除你的帳戶？',
   'Delete account': '刪除帳戶',
-  'This is permanent and cannot be undone.': '此操作為永久性，無法復原。',
+  'Your account will be scheduled for deletion. You will have a period of 30 days to reactivate your account using the link sent to your registered email address. If your account is not reactivated within this period, your account and all associated data will be permanently deleted and cannot be recovered.': '你的帳戶將被安排刪除。你有 30 天的期限，可使用傳送至你註冊電郵地址的連結重新啟用帳戶。如未在此期限內重新啟用，你的帳戶及所有相關資料將被永久刪除，且無法復原。',
+  'The reactivation link will be sent to': '重新啟用連結將傳送至',
+  'Your account has been scheduled for deletion. A reactivation link has been sent to': '你的帳戶已安排刪除。重新啟用連結已傳送至',
+  'This link is valid for 30 days.': '此連結有效期為 30 天。',
   'What will be deleted': '將被刪除的資料',
-  'Profile, saved cards, preferences, and other personal data linked to your account.': '個人資料、已儲存卡牌、偏好設定及其他與帳戶相關的個人資料。',
+  'Your profile, saved cards, preferences, and other personal data associated with your account.': '你的個人資料、已儲存卡牌、偏好設定及其他與帳戶相關的個人資料。',
   'Data we may retain': '可能保留的資料',
-  'Transaction records required for legal, tax, or accounting purposes. Not used for marketing.': '基於法律、稅務或會計需要而保留的交易記錄，不會用於市場推廣。',
-  'Active activity': '進行中的活動',
-  'grading submissions in progress': '項進行中的評級提交',
-  'grading submission in progress': '項進行中的評級提交',
-  'You will lose access to tracking and submission details.': '你將無法再存取相關追蹤及提交資料。',
-  'cards on HobbyX Marketplace': '張卡牌於 HobbyX 市場上架',
-  'card on HobbyX Marketplace': '張卡牌於 HobbyX 市場上架',
-  'Listings will be removed and sale information will no longer be accessible.': '上架項目將被移除，相關出售資料將無法再存取。',
-  'Please resolve these before deleting your account.': '請在刪除帳戶前先處理上述項目。',
-  'Confirm you understand': '請確認你已明白',
+  'Certain transaction records may be retained where required for legal, tax, or accounting purposes. Such records will not be used for marketing.': '基於法律、稅務或會計需要，部分交易記錄可能會被保留，且不會用於市場推廣。',
+  'Confirmation required': '須予確認',
   'Grading submissions': '評級提交',
   'Marketplace listings': '市場上架',
-  'I accept responsibility for any loss of access to in-progress submission data.': '我接受因此可能無法再存取進行中提交資料的責任。',
-  'I accept responsibility for removing listings and completing active sales first.': '我接受在刪除前先移除上架項目及完成進行中交易的責任。',
-  'I understand this permanently deletes my account and cannot be undone.': '我明白此操作將永久刪除我的帳戶，且無法復原。',
-  'Permanent deletion': '永久刪除',
-  'No grading submissions in progress': '沒有進行中的評級提交',
-  'No marketplace listings': '沒有市場上架項目',
-  'You have no submissions currently being processed.': '你目前沒有正在處理中的提交。',
-  'You have no cards listed for sale on HobbyX Marketplace.': '你沒有在 HobbyX 市場上架出售的卡牌。',
-  'You can proceed once you confirm below.': '確認下方內容後即可繼續。',
+  'I understand that if my account is permanently deleted, I will lose access to any in-progress grading submissions, including tracking and related order information.': '本人明白如帳戶被永久刪除，本人將無法再存取任何進行中的評級提交，包括追蹤及相關訂單資料。',
+  'I understand that if my account is permanently deleted, any active HobbyX Marketplace listings will be removed and I will no longer have access to related sale information.': '本人明白如帳戶被永久刪除，任何進行中的 HobbyX 市場上架項目將被移除，本人亦將無法再存取相關出售資料。',
   'Shipping to you': '寄送中',
   'In grading': '評級中',
   // —— pipeline / statuses ——
@@ -3511,57 +3499,6 @@ function NotificationsScreen({
 }
 
 /* ---------- ACCOUNT ---------- */
-function DelSk({
-  c
-}) {
-  return /*#__PURE__*/React.createElement("div", {
-    className: 'animate-pulse rounded bg-muted ' + (c || '')
-  });
-}
-function DeleteActivitySkeleton() {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "delete-account-section rounded-lg border border-amber-400/40 bg-amber-400/[0.08] p-3"
-  }, /*#__PURE__*/React.createElement(DeleteSectionLabel, null, tx('Active activity')), /*#__PURE__*/React.createElement("div", {
-    className: "delete-account-activity"
-  }, [0, 1].map(i => /*#__PURE__*/React.createElement("div", {
-    key: i,
-    className: "delete-account-activity__item"
-  }, /*#__PURE__*/React.createElement(DelSk, {
-    c: "h-8 w-8 shrink-0 rounded-full"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "min-w-0 flex-1"
-  }, /*#__PURE__*/React.createElement(DelSk, {
-    c: "h-3.5 w-4/5 rounded"
-  }), /*#__PURE__*/React.createElement(DelSk, {
-    c: "mt-2 h-3 w-full rounded"
-  }))))), /*#__PURE__*/React.createElement(DelSk, {
-    c: "mt-2.5 h-3 w-2/3 rounded"
-  }));
-}
-function DeleteConfirmSkeleton({
-  rows = 2
-}) {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "delete-account-section"
-  }, /*#__PURE__*/React.createElement(DeleteSectionLabel, {
-    spacious: true
-  }, tx('Confirm you understand')), /*#__PURE__*/React.createElement("div", {
-    className: "delete-account-acks"
-  }, Array.from({
-    length: rows
-  }, (_, i) => /*#__PURE__*/React.createElement("div", {
-    key: i,
-    className: "delete-account-ack pointer-events-none"
-  }, /*#__PURE__*/React.createElement(DelSk, {
-    c: "h-4 w-4 shrink-0 rounded"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "min-w-0 flex-1"
-  }, /*#__PURE__*/React.createElement(DelSk, {
-    c: "h-3.5 w-2/5 rounded"
-  }), /*#__PURE__*/React.createElement(DelSk, {
-    c: "mt-2 h-3 w-full rounded"
-  }))))));
-}
 function DeleteSectionLabel({
   children,
   spacious = false
@@ -3569,26 +3506,6 @@ function DeleteSectionLabel({
   return /*#__PURE__*/React.createElement("p", {
     className: 'text-[11px] font-bold uppercase tracking-wide text-muted-foreground ' + (spacious ? 'mb-3' : 'mb-2')
   }, children);
-}
-function DeleteActivityItem({
-  icon,
-  title,
-  detail,
-  clear = false
-}) {
-  return /*#__PURE__*/React.createElement("div", {
-    className: "delete-account-activity__item"
-  }, /*#__PURE__*/React.createElement("span", {
-    className: 'delete-account-activity__icon' + (clear ? ' delete-account-activity__icon--clear' : '')
-  }, /*#__PURE__*/React.createElement("span", {
-    className: "h-4 w-4"
-  }, icon)), /*#__PURE__*/React.createElement("div", {
-    className: "min-w-0"
-  }, /*#__PURE__*/React.createElement("p", {
-    className: "text-[13px] font-bold leading-snug text-foreground"
-  }, title), /*#__PURE__*/React.createElement("p", {
-    className: "mt-0.5 text-[12px] font-medium leading-snug text-muted-foreground"
-  }, detail)));
 }
 function DeleteAckRow({
   checked,
@@ -3618,11 +3535,7 @@ function AccountScreen({
   setTheme,
   onSignOut,
   openAccountInfo,
-  onDeleteAccount,
-  emptyActivity = false,
-  autoOpenDelete = false,
-  onAutoOpenDeleteHandled,
-  skeleton = false
+  onDeleteAccount
 }) {
   const [notif, setNotif] = useStateG(true);
   const [showPolicies, setShowPolicies] = useStateG(false);
@@ -3637,44 +3550,32 @@ function AccountScreen({
     a.remove();
   };
   const [confirmDelete, setConfirmDelete] = useStateG(false);
+  const [deleteScheduled, setDeleteScheduled] = useStateG(false);
   const [ackSubmissions, setAckSubmissions] = useStateG(false);
   const [ackListings, setAckListings] = useStateG(false);
-  const [ackGeneral, setAckGeneral] = useStateG(false);
-  const [deleteActivityLoading, setDeleteActivityLoading] = useStateG(false);
-  const inProgressCount = emptyActivity ? 0 : ORDERS.filter(o => o.group === 'progress').length;
-  const listingCount = emptyActivity ? 0 : ACCOUNT.marketplaceListings || 0;
-  const hasSubmissions = inProgressCount > 0;
-  const hasListings = listingCount > 0;
-  const hasActiveRisks = hasSubmissions || hasListings;
-  const canDelete = !deleteActivityLoading && (hasActiveRisks ? (!hasSubmissions || ackSubmissions) && (!hasListings || ackListings) : ackGeneral);
-  React.useEffect(() => {
-    if (!autoOpenDelete) return;
+  const userEmail = ACCOUNT.info.email;
+  const canDelete = ackSubmissions && ackListings;
+  const resetDeleteAcks = () => {
     setAckSubmissions(false);
     setAckListings(false);
-    setAckGeneral(false);
-    setConfirmDelete(true);
-    onAutoOpenDeleteHandled && onAutoOpenDeleteHandled();
-  }, [autoOpenDelete]);
-  React.useEffect(() => {
-    if (!confirmDelete || !skeleton) {
-      setDeleteActivityLoading(false);
-      return;
-    }
-    setDeleteActivityLoading(true);
-    const t = setTimeout(() => setDeleteActivityLoading(false), 2000);
-    return () => clearTimeout(t);
-  }, [confirmDelete, skeleton]);
+  };
   const closeDelete = () => {
     setConfirmDelete(false);
-    setAckSubmissions(false);
-    setAckListings(false);
-    setAckGeneral(false);
+    resetDeleteAcks();
   };
   const openDeleteConfirm = () => {
-    setAckSubmissions(false);
-    setAckListings(false);
-    setAckGeneral(false);
+    resetDeleteAcks();
     setConfirmDelete(true);
+  };
+  const scheduleDelete = () => {
+    setConfirmDelete(false);
+    resetDeleteAcks();
+    setDeleteScheduled(true);
+  };
+  const finishDeleteScheduled = () => {
+    setDeleteScheduled(false);
+    onDeleteAccount && onDeleteAccount(userEmail);
+    goBack();
   };
   return /*#__PURE__*/React.createElement("div", {
     className: "flex h-full flex-col bg-background"
@@ -3784,65 +3685,62 @@ function AccountScreen({
     className: "h-[22px] w-[22px]"
   }, Icon.trash)), /*#__PURE__*/React.createElement("h2", {
     className: "text-lg font-extrabold leading-tight text-foreground"
-  }, tx('Delete your account?'))), /*#__PURE__*/React.createElement("p", {
-    className: "mt-1.5 text-[14px] font-semibold leading-snug text-foreground"
-  }, tx('This is permanent and cannot be undone.'))), /*#__PURE__*/React.createElement("div", {
+  }, tx('Delete your account?')))), /*#__PURE__*/React.createElement("div", {
     className: "delete-account-sheet__body no-scrollbar"
-  }, /*#__PURE__*/React.createElement("div", {
+  }, /*#__PURE__*/React.createElement("p", {
+    className: "text-[13px] font-medium leading-relaxed text-muted-foreground"
+  }, tx('Your account will be scheduled for deletion. You will have a period of 30 days to reactivate your account using the link sent to your registered email address. If your account is not reactivated within this period, your account and all associated data will be permanently deleted and cannot be recovered.')), /*#__PURE__*/React.createElement("p", {
+    className: "mt-3 text-[13px] font-medium leading-relaxed text-muted-foreground"
+  }, tx('The reactivation link will be sent to'), " ", /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-foreground"
+  }, userEmail)), /*#__PURE__*/React.createElement("div", {
     className: "delete-account-section"
   }, /*#__PURE__*/React.createElement(DeleteSectionLabel, null, tx('What will be deleted')), /*#__PURE__*/React.createElement("p", {
     className: "text-[13px] font-medium leading-relaxed text-muted-foreground"
-  }, tx('Profile, saved cards, preferences, and other personal data linked to your account.'))), /*#__PURE__*/React.createElement("div", {
+  }, tx('Your profile, saved cards, preferences, and other personal data associated with your account.'))), /*#__PURE__*/React.createElement("div", {
     className: "delete-account-note"
   }, /*#__PURE__*/React.createElement(DeleteSectionLabel, null, tx('Data we may retain')), /*#__PURE__*/React.createElement("p", {
     className: "text-[12px] font-medium leading-relaxed text-muted-foreground"
-  }, tx('Transaction records required for legal, tax, or accounting purposes. Not used for marketing.'))), deleteActivityLoading ? /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement(DeleteActivitySkeleton, null), /*#__PURE__*/React.createElement(DeleteConfirmSkeleton, null)) : /*#__PURE__*/React.createElement(React.Fragment, null, /*#__PURE__*/React.createElement("div", {
-    className: "delete-account-section rounded-lg border border-amber-400/40 bg-amber-400/[0.08] p-3"
-  }, /*#__PURE__*/React.createElement(DeleteSectionLabel, null, tx('Active activity')), /*#__PURE__*/React.createElement("div", {
-    className: "delete-account-activity"
-  }, /*#__PURE__*/React.createElement(DeleteActivityItem, {
-    icon: hasSubmissions ? Icon.layers : Icon.check,
-    clear: !hasSubmissions,
-    title: hasSubmissions ? inProgressCount + ' ' + tx(inProgressCount === 1 ? 'grading submission in progress' : 'grading submissions in progress') : tx('No grading submissions in progress'),
-    detail: hasSubmissions ? tx('You will lose access to tracking and submission details.') : tx('You have no submissions currently being processed.')
-  }), /*#__PURE__*/React.createElement(DeleteActivityItem, {
-    icon: hasListings ? Icon.doc : Icon.check,
-    clear: !hasListings,
-    title: hasListings ? listingCount + ' ' + tx(listingCount === 1 ? 'card on HobbyX Marketplace' : 'cards on HobbyX Marketplace') : tx('No marketplace listings'),
-    detail: hasListings ? tx('Listings will be removed and sale information will no longer be accessible.') : tx('You have no cards listed for sale on HobbyX Marketplace.')
-  })), /*#__PURE__*/React.createElement("p", {
-    className: "mt-2.5 text-[12px] font-semibold leading-snug text-foreground"
-  }, tx(hasActiveRisks ? 'Please resolve these before deleting your account.' : 'You can proceed once you confirm below.'))), /*#__PURE__*/React.createElement("div", {
+  }, tx('Certain transaction records may be retained where required for legal, tax, or accounting purposes. Such records will not be used for marketing.'))), /*#__PURE__*/React.createElement("div", {
     className: "delete-account-section"
   }, /*#__PURE__*/React.createElement(DeleteSectionLabel, {
     spacious: true
-  }, tx('Confirm you understand')), /*#__PURE__*/React.createElement("div", {
+  }, tx('Confirmation required')), /*#__PURE__*/React.createElement("div", {
     className: "delete-account-acks"
-  }, hasSubmissions && /*#__PURE__*/React.createElement(DeleteAckRow, {
+  }, /*#__PURE__*/React.createElement(DeleteAckRow, {
     checked: ackSubmissions,
     onChange: setAckSubmissions,
     title: tx('Grading submissions')
-  }, tx('I accept responsibility for any loss of access to in-progress submission data.')), hasListings && /*#__PURE__*/React.createElement(DeleteAckRow, {
+  }, tx('I understand that if my account is permanently deleted, I will lose access to any in-progress grading submissions, including tracking and related order information.')), /*#__PURE__*/React.createElement(DeleteAckRow, {
     checked: ackListings,
     onChange: setAckListings,
     title: tx('Marketplace listings')
-  }, tx('I accept responsibility for removing listings and completing active sales first.')), !hasActiveRisks && /*#__PURE__*/React.createElement(DeleteAckRow, {
-    checked: ackGeneral,
-    onChange: setAckGeneral,
-    title: tx('Permanent deletion')
-  }, tx('I understand this permanently deletes my account and cannot be undone.')))))), /*#__PURE__*/React.createElement("div", {
+  }, tx('I understand that if my account is permanently deleted, any active HobbyX Marketplace listings will be removed and I will no longer have access to related sale information.')))), /*#__PURE__*/React.createElement("div", {
     className: "delete-account-sheet__actions"
   }, /*#__PURE__*/React.createElement("button", {
     disabled: !canDelete,
-    onClick: () => {
-      closeDelete();
-      onDeleteAccount && onDeleteAccount();
-    },
+    onClick: scheduleDelete,
     className: "flex h-12 w-full items-center justify-center rounded-md bg-red-600 text-[15px] font-bold text-white transition-colors hover:bg-red-700 active:scale-[.99] disabled:pointer-events-none disabled:opacity-50"
   }, tx('Delete account')), /*#__PURE__*/React.createElement("button", {
     onClick: closeDelete,
     className: "flex h-12 w-full items-center justify-center rounded-md text-[15px] font-bold text-foreground transition-colors hover:bg-accent active:scale-[.99]"
-  }, tx('Cancel'))))));
+  }, tx('Cancel')))))), deleteScheduled && /*#__PURE__*/React.createElement("div", {
+    className: "absolute inset-0 z-40 flex items-end justify-center overflow-hidden bg-black/50 p-4"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-sheet rounded-2xl bg-card p-5 shadow-xl",
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "delete-account-success__icon"
+  }, /*#__PURE__*/React.createElement("span", {
+    className: "h-5 w-5"
+  }, Icon.check)), /*#__PURE__*/React.createElement("p", {
+    className: "mt-3.5 text-[13px] font-medium leading-relaxed text-muted-foreground"
+  }, tx('Your account has been scheduled for deletion. A reactivation link has been sent to'), " ", /*#__PURE__*/React.createElement("span", {
+    className: "font-bold text-foreground"
+  }, userEmail), ". ", tx('This link is valid for 30 days.')), /*#__PURE__*/React.createElement("button", {
+    onClick: finishDeleteScheduled,
+    className: "mt-5 flex h-12 w-full items-center justify-center rounded-md bg-foreground text-[15px] font-bold text-background transition-colors hover:bg-foreground/90 active:scale-[.99]"
+  }, tx('Done')))));
 }
 
 /* ---------- ACCOUNT INFO (editable form) ---------- */
@@ -5649,8 +5547,7 @@ function GradingApp({
   offline,
   empty,
   gradingOnly,
-  skeleton,
-  emptyActivity
+  skeleton
 }) {
   const [tab, setTab] = useRootState('progress');
   const [stack, setStack] = useRootState([{
@@ -5660,7 +5557,6 @@ function GradingApp({
   const [reveal, setReveal] = useRootState(false);
   const [revealedIds, setRevealedIds] = useRootState([]);
   const [highlightId, setHighlightId] = useRootState(null);
-  const [emptyDeletePreview, setEmptyDeletePreview] = useRootState(false);
   const top = stack[stack.length - 1];
   const order = top.orderId ? ORDERS.find(o => o.id === top.orderId) : null;
   const unread = empty ? 0 : NOTIFICATIONS.filter(n => n.unread).length;
@@ -5674,19 +5570,6 @@ function GradingApp({
     setCard(null);
     setReveal(false);
   };
-  useRootEffect(() => {
-    if (!emptyActivity) {
-      setEmptyDeletePreview(false);
-      return;
-    }
-    setStack([{
-      name: 'list'
-    }, {
-      name: 'account'
-    }]);
-    setEmptyDeletePreview(true);
-  }, [emptyActivity]);
-
   // "Loading" phase: show a matching skeleton for ~2s every time a page is opened,
   // then reveal the real screen — all without leaving the Loading tab.
   const skVariant = card != null ? 'card' : top.name === 'accountinfo' ? 'account' : top.name;
@@ -5750,10 +5633,6 @@ function GradingApp({
     goBack: pop,
     theme: theme,
     setTheme: setTheme,
-    emptyActivity: emptyActivity,
-    autoOpenDelete: emptyDeletePreview,
-    onAutoOpenDeleteHandled: () => setEmptyDeletePreview(false),
-    skeleton: skeleton,
     openAccountInfo: () => push({
       name: 'accountinfo'
     }),
@@ -5763,12 +5642,7 @@ function GradingApp({
       } catch (e) {}
       window.location.href = 'index.html';
     },
-    onDeleteAccount: () => {
-      try {
-        localStorage.removeItem('hobbyx_keep');
-      } catch (e) {}
-      window.location.href = 'index.html';
-    }
+    onDeleteAccount: () => {}
   }), top.name === 'accountinfo' && /*#__PURE__*/React.createElement(AccountInfoScreen, {
     goBack: pop,
     openLegal: () => {}
@@ -5916,7 +5790,7 @@ function App() {
     }
   }, /*#__PURE__*/React.createElement("div", {
     className: "inline-flex items-center gap-1 rounded-full bg-white p-1 shadow-md ring-1 ring-black/5"
-  }, [['auth', 'Auth'], ['app', 'Grading'], ['empty', 'Empty Grading'], ['gradingonly', 'Only Grading'], ['emptyactivity', 'Empty Activity'], ['loading', 'Loading']].map(([k, l]) => /*#__PURE__*/React.createElement("button", {
+  }, [['auth', 'Auth'], ['app', 'Grading'], ['empty', 'Empty Grading'], ['gradingonly', 'Only Grading'], ['loading', 'Loading']].map(([k, l]) => /*#__PURE__*/React.createElement("button", {
     key: k,
     onClick: () => setPhase(k),
     className: 'whitespace-nowrap rounded-full px-3.5 py-1.5 text-sm font-bold transition-colors ' + (phase === k ? 'bg-neutral-900 text-white' : 'text-neutral-500')
@@ -5974,8 +5848,7 @@ function App() {
     offline: offline,
     empty: phase === 'empty',
     gradingOnly: phase === 'gradingonly',
-    skeleton: phase === 'loading',
-    emptyActivity: phase === 'emptyactivity'
+    skeleton: phase === 'loading'
   })), /*#__PURE__*/React.createElement(Toaster, null), /*#__PURE__*/React.createElement("div", {
     className: "pointer-events-none absolute bottom-2 left-1/2 z-50 h-[5px] w-[135px] -translate-x-1/2 rounded-full bg-foreground/30"
   })))), /*#__PURE__*/React.createElement(TweaksPanel, null, /*#__PURE__*/React.createElement(TweakSection, {
