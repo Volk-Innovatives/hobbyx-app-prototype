@@ -692,3 +692,14 @@
   display:block; margin-top:.5rem; font-size:12px; font-weight:500;
   line-height:1.5; color:hsl(var(--muted-foreground));
 }
+.delete-account-sheet__actions--row{
+  flex-direction:row; gap:.625rem;
+}
+.delete-account-sheet__actions--row > button{
+  flex:1 1 0;
+}
+.delete-account-success__icon{
+  display:flex; height:2.75rem; width:2.75rem; align-items:center;
+  justify-content:center; border-radius:9999px;
+  background:hsl(var(--success) / .12); color:hsl(var(--success));
+}
