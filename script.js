@@ -44,6 +44,17 @@ function progressFor(key) {
   return STEP_INDEX[key] / (PIPELINE.length - 1);
 }
 
+// An item only counts as "graded" once it has a grade assigned. Until then —
+// even inside a Grades Ready / Completing / Complete order — it keeps its
+// original ungraded image, shows a "Not graded" status, and is dropped from
+// the reveal stories.
+function isGraded(it) {
+  return !!(it && it.grade);
+}
+function gradesReadyFor(order) {
+  return STEP_INDEX[order.status] >= STEP_INDEX.ready;
+}
+
 // status → badge intent. ALL neutral so every label looks the same.
 // Only "Complete" keeps the success (green) tone.
 function statusIntent(key) {
@@ -1004,7 +1015,220 @@ const ZH = {
   'Go to Login': '前往登入',
   // —— login errors ——
   'We couldn’t find an account with that email address.': '找不到使用此電郵地址的帳戶。',
-  'Incorrect password. Please try again.': '密碼不正確。請再試一次。'
+  'Incorrect password. Please try again.': '密碼不正確。請再試一次。',
+  // —— added: full country list + remaining UI strings ——
+  'Macau': '澳門',
+  'Afghanistan': '阿富汗',
+  'Albania': '阿爾巴尼亞',
+  'Algeria': '阿爾及利亞',
+  'Andorra': '安道爾',
+  'Angola': '安哥拉',
+  'Antigua and Barbuda': '安提瓜和巴布達',
+  'Argentina': '阿根廷',
+  'Armenia': '亞美尼亞',
+  'Austria': '奧地利',
+  'Azerbaijan': '阿塞拜疆',
+  'Bahamas': '巴哈馬',
+  'Bahrain': '巴林',
+  'Bangladesh': '孟加拉國',
+  'Barbados': '巴巴多斯',
+  'Belarus': '白俄羅斯',
+  'Belgium': '比利時',
+  'Belize': '伯利茲',
+  'Benin': '貝寧',
+  'Bhutan': '不丹',
+  'Bolivia': '玻利維亞',
+  'Bosnia and Herzegovina': '波黑',
+  'Botswana': '博茨瓦納',
+  'Brazil': '巴西',
+  'Brunei': '文萊',
+  'Bulgaria': '保加利亞',
+  'Burkina Faso': '布基納法索',
+  'Burundi': '布隆迪',
+  'Cambodia': '柬埔寨',
+  'Cameroon': '喀麥隆',
+  'Cape Verde': '佛得角',
+  'Central African Republic': '中非',
+  'Chad': '乍得',
+  'Chile': '智利',
+  'Colombia': '哥倫比亞',
+  'Comoros': '科摩羅',
+  'Congo': '剛果（布）',
+  'Congo (DRC)': '剛果（金）',
+  'Costa Rica': '哥斯達黎加',
+  'Côte d’Ivoire': '科特迪瓦',
+  'Croatia': '克羅地亞',
+  'Cuba': '古巴',
+  'Cyprus': '塞浦路斯',
+  'Czechia': '捷克',
+  'Denmark': '丹麥',
+  'Djibouti': '吉布提',
+  'Dominica': '多米尼克',
+  'Dominican Republic': '多米尼加',
+  'Ecuador': '厄瓜多爾',
+  'Egypt': '埃及',
+  'El Salvador': '薩爾瓦多',
+  'Equatorial Guinea': '赤道幾內亞',
+  'Eritrea': '厄立特里亞',
+  'Estonia': '愛沙尼亞',
+  'Eswatini': '斯威士蘭',
+  'Ethiopia': '埃塞俄比亞',
+  'Fiji': '斐濟',
+  'Finland': '芬蘭',
+  'Gabon': '加蓬',
+  'Gambia': '岡比亞',
+  'Georgia': '格魯吉亞',
+  'Ghana': '加納',
+  'Greece': '希臘',
+  'Grenada': '格林納達',
+  'Guatemala': '危地馬拉',
+  'Guinea': '幾內亞',
+  'Guinea-Bissau': '幾內亞比紹',
+  'Guyana': '圭亞那',
+  'Haiti': '海地',
+  'Honduras': '洪都拉斯',
+  'Hungary': '匈牙利',
+  'Iceland': '冰島',
+  'Indonesia': '印尼',
+  'Iran': '伊朗',
+  'Iraq': '伊拉克',
+  'Ireland': '愛爾蘭',
+  'Israel': '以色列',
+  'Italy': '意大利',
+  'Jamaica': '牙買加',
+  'Jordan': '約旦',
+  'Kazakhstan': '哈薩克斯坦',
+  'Kenya': '肯尼亞',
+  'Kiribati': '基里巴斯',
+  'Kuwait': '科威特',
+  'Kyrgyzstan': '吉爾吉斯斯坦',
+  'Laos': '老撾',
+  'Latvia': '拉脱維亞',
+  'Lebanon': '黎巴嫩',
+  'Lesotho': '萊索托',
+  'Liberia': '利比里亞',
+  'Libya': '利比亞',
+  'Liechtenstein': '列支敦士登',
+  'Lithuania': '立陶宛',
+  'Luxembourg': '盧森堡',
+  'Madagascar': '馬達加斯加',
+  'Malawi': '馬拉維',
+  'Maldives': '馬爾代夫',
+  'Mali': '馬裏',
+  'Malta': '馬耳他',
+  'Marshall Islands': '馬紹爾羣島',
+  'Mauritania': '毛里塔尼亞',
+  'Mauritius': '毛里求斯',
+  'Mexico': '墨西哥',
+  'Micronesia': '密克羅尼西亞聯邦',
+  'Moldova': '摩爾多瓦',
+  'Monaco': '摩納哥',
+  'Mongolia': '蒙古',
+  'Montenegro': '黑山',
+  'Morocco': '摩洛哥',
+  'Mozambique': '莫桑比克',
+  'Myanmar': '緬甸',
+  'Namibia': '納米比亞',
+  'Nauru': '瑙魯',
+  'Nepal': '尼泊爾',
+  'Netherlands': '荷蘭',
+  'New Zealand': '新西蘭',
+  'Nicaragua': '尼加拉瓜',
+  'Niger': '尼日爾',
+  'Nigeria': '尼日利亞',
+  'North Macedonia': '北馬其頓',
+  'Norway': '挪威',
+  'Oman': '阿曼',
+  'Pakistan': '巴基斯坦',
+  'Palau': '帕勞',
+  'Palestine': '巴勒斯坦',
+  'Panama': '巴拿馬',
+  'Papua New Guinea': '巴布亞新幾內亞',
+  'Paraguay': '巴拉圭',
+  'Peru': '秘魯',
+  'Philippines': '菲律賓',
+  'Poland': '波蘭',
+  'Portugal': '葡萄牙',
+  'Qatar': '卡塔爾',
+  'Romania': '羅馬尼亞',
+  'Russia': '俄羅斯',
+  'Rwanda': '盧旺達',
+  'Saint Kitts and Nevis': '聖基茨和尼維斯',
+  'Saint Lucia': '聖盧西亞',
+  'Saint Vincent and the Grenadines': '聖文森特和格林納丁斯',
+  'Samoa': '薩摩亞',
+  'San Marino': '聖馬力諾',
+  'São Tomé and Príncipe': '聖多美和普林西比',
+  'Saudi Arabia': '沙特阿拉伯',
+  'Senegal': '塞內加爾',
+  'Serbia': '塞爾維亞',
+  'Seychelles': '塞舌爾',
+  'Sierra Leone': '塞拉利昂',
+  'Slovakia': '斯洛伐克',
+  'Slovenia': '斯洛文尼亞',
+  'Solomon Islands': '所羅門羣島',
+  'Somalia': '索馬里',
+  'South Africa': '南非',
+  'South Sudan': '南蘇丹',
+  'Spain': '西班牙',
+  'Sri Lanka': '斯里蘭卡',
+  'Sudan': '蘇丹',
+  'Suriname': '蘇里南',
+  'Sweden': '瑞典',
+  'Switzerland': '瑞士',
+  'Syria': '敍利亞',
+  'Tajikistan': '塔吉克斯坦',
+  'Tanzania': '坦桑尼亞',
+  'Thailand': '泰國',
+  'Timor-Leste': '東帝汶',
+  'Togo': '多哥',
+  'Tonga': '湯加',
+  'Trinidad and Tobago': '特立尼達和多巴哥',
+  'Tunisia': '突尼斯',
+  'Turkey': '土耳其',
+  'Turkmenistan': '土庫曼斯坦',
+  'Tuvalu': '圖瓦盧',
+  'Uganda': '烏干達',
+  'Ukraine': '烏克蘭',
+  'Uruguay': '烏拉圭',
+  'Uzbekistan': '烏茲別克斯坦',
+  'Vanuatu': '瓦努阿圖',
+  'Vatican City': '梵蒂岡',
+  'Venezuela': '委內瑞拉',
+  'Vietnam': '越南',
+  'Yemen': '也門',
+  'Zambia': '贊比亞',
+  'Zimbabwe': '津巴布韋',
+  'Search country or code': '搜尋國家或代碼',
+  'No countries found': '找不到國家',
+  'Clear all filters': '清除所有篩選',
+  'Get your cards graded': '為你的卡牌評級',
+  'Opens the HobbyX website in your browser': '在你的瀏覽器中開啟 HobbyX 網站',
+  'Your items are currently being reviewed and will appear here soon.': '你的物品正在審核中，稍後將在此顯示。',
+  'View all grades now?': '立即查看所有評級？',
+  'We’ll take you straight to the full list with every grade shown. You can always start the grade reveal later whenever you like.': '我們會帶你直接前往顯示所有評級的完整清單。你隨時可以稍後再開始評級揭曉。',
+  'Cancel': '取消',
+  'Card Grade': '卡牌評級',
+  'Autograph': '簽名',
+  'Grader Notes': '評級師備註',
+  'card': '張卡牌',
+  'cards': '張卡牌',
+  'revealed': '已揭曉',
+  'Contact Us': '聯絡我們',
+  'All Rights Reserved': '版權所有',
+  'Leaving HobbyX': '正在離開 HobbyX',
+  'You’ll open the': '你將開啟',
+  'page on': '頁面，網址為',
+  'in your browser.': '（在你的瀏覽器中）。',
+  'Continue': '繼續',
+  'Shipping Policy': '送貨政策',
+  'Terms & Policies': '條款及政策',
+  'Remove Account': '移除帳戶',
+  'Delete Account': '刪除帳戶',
+  'Newest': '最新',
+  'Oldest': '最舊',
+  'Not graded': '未評級',
+  'This card was not graded.': '此卡牌未獲評級。',
 };
 const langSubs = new Set();
 if (typeof window.__lang === 'undefined') {
@@ -1023,7 +1247,7 @@ function setLang(l) {
 }
 /* Traditional → Simplified character map — covers every Chinese character used in ZH.
    Characters identical in both scripts are omitted (left unchanged). */
-const T2S_PAIRS = '\u4e9e\u4e9a\u4e26\u5e76\u4f86\u6765\u5011\u4eec\u500b\u4e2a\u5099\u5907\u50b3\u4f20\u50c5\u4ec5\u50f9\u4ef7\u5132\u50a8\u5169\u4e24\u518a\u518c\u5225\u522b\u522a\u5220\u5247\u5219\u52d5\u52a8\u52d9\u52a1\u5354\u534f\u53c3\u53c2\u54e1\u5458\u55ae\u5355\u5617\u5c1d\u570b\u56fd\u5716\u56fe\u5834\u573a\u5922\u68a6\u5bf6\u5b9d\u5c07\u5c06\u5c0b\u5bfb\u5e33\u8d26\u5eab\u5e93\u5f35\u5f20\u5f37\u5f3a\u5f8c\u540e\u614b\u6001\u6232\u620f\u6236\u6237\u64c7\u62e9\u64ca\u51fb\u64da\u636e\u6578\u6570\u65bc\u4e8e\u6642\u65f6\u66ab\u6682\u66c9\u6653\u6703\u4f1a\u689d\u6761\u696d\u4e1a\u6a19\u6807\u6aa2\u68c0\u6bbc\u58f3\u6c7a\u51b3\u6c92\u6ca1\u6dfa\u6d45\u6e96\u51c6\u7063\u6e7e\u70ba\u4e3a\u7121\u65e0\u71df\u8425\u72c0\u72b6\u7372\u83b7\u73fe\u73b0\u756b\u753b\u7576\u5f53\u767c\u53d1\u76e1\u5c3d\u78ba\u786e\u78bc\u7801\u7a31\u79f0\u7a4d\u79ef\u7bc4\u8303\u7be9\u7b5b\u7c3d\u7b7e\u7c43\u7bee\u7c64\u7b7e\u7d1a\u7ea7\u7d30\u7ec6\u7d42\u7ec8\u7d50\u7ed3\u7d61\u7edc\u7d71\u7edf\u7d93\u7ecf\u7db2\u7f51\u7dda\u7ebf\u7de8\u7f16\u806f\u8054\u8072\u58f0\u8207\u4e0e\u820a\u65e7\u84cb\u76d6\u8655\u5904\u865f\u53f7\u88dd\u88c5\u88fd\u5236\u8996\u89c6\u89c0\u89c2\u89f8\u89e6\u8a02\u8ba2\u8a08\u8ba1\u8a0a\u8baf\u8a18\u8bb0\u8a2d\u8bbe\u8a31\u8bb8\u8a3b\u6ce8\u8a55\u8bc4\u8a5e\u8bcd\u8a66\u8bd5\u8a71\u8bdd\u8a73\u8be6\u8a8d\u8ba4\u8a9e\u8bed\u8acb\u8bf7\u8b49\u8bc1\u8b58\u8bc6\u8b77\u62a4\u8b80\u8bfb\u8b8a\u53d8\u8ca8\u8d27\u8cc7\u8d44\u8cca\u8d3c\u8cea\u8d28\u8e64\u8e2a\u8f15\u8f7b\u8f38\u8f93\u8f49\u8f6c\u9023\u8fde\u9032\u8fdb\u904a\u6e38\u9054\u8fbe\u9078\u9009\u90f5\u90ae\u9280\u94f6\u9451\u9274\u9577\u957f\u9580\u95e8\u958b\u5f00\u9593\u95f4\u95b1\u9605\u95dc\u5173\u968e\u9636\u96aa\u9669\u96b1\u9690\u96e2\u79bb\u96fb\u7535\u97d3\u97e9\u9801\u9875\u9805\u9879\u9810\u9884\u985e\u7c7b\u986f\u663e\u99ac\u9a6c\u9a57\u9a8c\u9b25\u6597\u9ede\u70b9\u5553\u542f\u5167\u5185';
+const T2S_PAIRS = '\u4e9e\u4e9a\u4e26\u5e76\u4f86\u6765\u5011\u4eec\u500b\u4e2a\u5099\u5907\u50b3\u4f20\u50c5\u4ec5\u50f9\u4ef7\u5132\u50a8\u5169\u4e24\u518a\u518c\u5225\u522b\u522a\u5220\u5247\u5219\u52d5\u52a8\u52d9\u52a1\u5354\u534f\u53c3\u53c2\u54e1\u5458\u55ae\u5355\u5617\u5c1d\u570b\u56fd\u5716\u56fe\u5834\u573a\u5922\u68a6\u5bf6\u5b9d\u5c07\u5c06\u5c0b\u5bfb\u5e33\u8d26\u5eab\u5e93\u5f35\u5f20\u5f37\u5f3a\u5f8c\u540e\u614b\u6001\u6232\u620f\u6236\u6237\u64c7\u62e9\u64ca\u51fb\u64da\u636e\u6578\u6570\u65bc\u4e8e\u6642\u65f6\u66ab\u6682\u66c9\u6653\u6703\u4f1a\u689d\u6761\u696d\u4e1a\u6a19\u6807\u6aa2\u68c0\u6bbc\u58f3\u6c7a\u51b3\u6c92\u6ca1\u6dfa\u6d45\u6e96\u51c6\u7063\u6e7e\u70ba\u4e3a\u7121\u65e0\u71df\u8425\u72c0\u72b6\u7372\u83b7\u73fe\u73b0\u756b\u753b\u7576\u5f53\u767c\u53d1\u76e1\u5c3d\u78ba\u786e\u78bc\u7801\u7a31\u79f0\u7a4d\u79ef\u7bc4\u8303\u7be9\u7b5b\u7c3d\u7b7e\u7c43\u7bee\u7c64\u7b7e\u7d1a\u7ea7\u7d30\u7ec6\u7d42\u7ec8\u7d50\u7ed3\u7d61\u7edc\u7d71\u7edf\u7d93\u7ecf\u7db2\u7f51\u7dda\u7ebf\u7de8\u7f16\u806f\u8054\u8072\u58f0\u8207\u4e0e\u820a\u65e7\u84cb\u76d6\u8655\u5904\u865f\u53f7\u88dd\u88c5\u88fd\u5236\u8996\u89c6\u89c0\u89c2\u89f8\u89e6\u8a02\u8ba2\u8a08\u8ba1\u8a0a\u8baf\u8a18\u8bb0\u8a2d\u8bbe\u8a31\u8bb8\u8a3b\u6ce8\u8a55\u8bc4\u8a5e\u8bcd\u8a66\u8bd5\u8a71\u8bdd\u8a73\u8be6\u8a8d\u8ba4\u8a9e\u8bed\u8acb\u8bf7\u8b49\u8bc1\u8b58\u8bc6\u8b77\u62a4\u8b80\u8bfb\u8b8a\u53d8\u8ca8\u8d27\u8cc7\u8d44\u8cca\u8d3c\u8cea\u8d28\u8e64\u8e2a\u8f15\u8f7b\u8f38\u8f93\u8f49\u8f6c\u9023\u8fde\u9032\u8fdb\u904a\u6e38\u9054\u8fbe\u9078\u9009\u90f5\u90ae\u9280\u94f6\u9451\u9274\u9577\u957f\u9580\u95e8\u958b\u5f00\u9593\u95f4\u95b1\u9605\u95dc\u5173\u968e\u9636\u96aa\u9669\u96b1\u9690\u96e2\u79bb\u96fb\u7535\u97d3\u97e9\u9801\u9875\u9805\u9879\u9810\u9884\u985e\u7c7b\u986f\u663e\u99ac\u9a6c\u9a57\u9a8c\u9b25\u6597\u9ede\u70b9\u5553\u542f\u5167\u5185\u555f\u542f\u5fa9\u590d\u7a05\u7a0e\u9304\u5f55\u5ee3\u5e7f\u9808\u987b\u723e\u5c14\u5967\u5965\u7f85\u7f57\u8332\u5179\u8c9d\u8d1d\u5be7\u5b81\u7dad\u7ef4\u7d0d\u7eb3\u840a\u83b1\u9ea5\u9ea6\u502b\u4f26\u525b\u521a\u85a9\u8428\u5e7e\u51e0\u611b\u7231\u862d\u5170\u6fdf\u6d4e\u5ca1\u5188\u9b6f\u9c81\u81d8\u814a\u7d39\u7ecd\u5cf6\u5c9b\u8cb7\u4e70\u7d04\u7ea6\u64be\u631d\u76e7\u5362\u88cf\u91cc\u7fa3\u7fa4\u7dec\u7f05\u9813\u987f\u52de\u52b3\u8cd3\u5bbe\u8056\u5723\u8afe\u8bfa\u8607\u82cf\u654d\u53d9\u6771\u4e1c\u6e6f\u6c64\u70cf\u4e4c\u8d0a\u8d5e\u97cb\u97e6\u700f\u6d4f\u89bd\u89c8\u5be9\u5ba1\u5e36\u5e26\u96a8\u968f\u5e2b\u5e08\u6b0a\u6743\u7e7c\u7ee7\u7e8c\u7eed';
 const T2S = {};
 for (let i = 0; i < T2S_PAIRS.length; i += 2) {
   T2S[T2S_PAIRS[i]] = T2S_PAIRS[i + 1];
@@ -2396,7 +2620,7 @@ function Menu({
     key: it.key,
     onClick: () => onPick(it.key),
     className: "flex w-full items-center justify-between rounded-sm px-2 py-2 text-sm font-medium text-popover-foreground hover:bg-accent"
-  }, it.label, current === it.key && /*#__PURE__*/React.createElement("span", {
+  }, tx(it.label), current === it.key && /*#__PURE__*/React.createElement("span", {
     className: "h-4 w-4 text-primary"
   }, Icon.check))));
 }
@@ -2584,7 +2808,8 @@ function ListScreen({
       className: 'group flex w-full items-center gap-4 rounded-lg border border-border bg-[#F5F6F8] p-3 text-left transition-colors dark:bg-card ' + (highlightId === o.id ? 'notif-glow ' : '') + (o.locked ? (highlightId === o.id ? '' : 'opacity-60 ') + 'active:scale-[.995]' : 'hover:border-foreground/15 hover:bg-accent/40 active:scale-[.995]')
     }, o.group === 'completed' ? /*#__PURE__*/React.createElement(Slab, {
       item: o.items[0],
-      className: "h-[84px] w-[60px] shrink-0 shadow-sm"
+      className: "h-[84px] w-[60px] shrink-0 shadow-sm",
+      hideNotes: true
     }) : /*#__PURE__*/React.createElement(CardImage, {
       cert: o.items[0].cert,
       category: o.category,
@@ -2780,9 +3005,10 @@ function DetailScreen({
       key: it.cert,
       onClick: handleViewAll,
       className: "shrink-0 transition-transform active:scale-95"
-    }, it.grade ? /*#__PURE__*/React.createElement(Slab, {
+    }, isGraded(it) ? /*#__PURE__*/React.createElement(Slab, {
       item: it,
       className: "h-[92px] w-[66px] shadow-sm",
+      hideNotes: true,
       style: blurred ? {
         filter: 'blur(2.5px)'
       } : null
@@ -2860,7 +3086,7 @@ function ItemsScreen({
   }, /*#__PURE__*/React.createElement("button", {
     onClick: () => openCard(i),
     className: "flex w-full items-center gap-3.5 text-left"
-  }, it.grade ? /*#__PURE__*/React.createElement(Slab, {
+  }, isGraded(it) ? /*#__PURE__*/React.createElement(Slab, {
     item: it,
     className: "h-[74px] w-[53px] shrink-0 shadow-sm"
   }) : /*#__PURE__*/React.createElement(CardImage, {
@@ -2874,7 +3100,7 @@ function ItemsScreen({
     className: "text-xs font-medium text-muted-foreground"
   }, "#", it.cert), /*#__PURE__*/React.createElement("div", {
     className: "mt-0.5 line-clamp-2 text-sm font-semibold leading-snug text-foreground"
-  }, tx(it.name)), it.grade ? /*#__PURE__*/React.createElement("div", {
+  }, tx(it.name)), isGraded(it) ? /*#__PURE__*/React.createElement("div", {
     className: "mt-1 text-sm font-bold text-foreground"
   }, it.grade, " ", /*#__PURE__*/React.createElement("span", {
     className: "font-semibold text-muted-foreground"
@@ -2883,7 +3109,7 @@ function ItemsScreen({
   }, " \xB7 ", it.auto) : null) : /*#__PURE__*/React.createElement(Badge, {
     intent: "neutral",
     className: "mt-1.5"
-  }, tx(order.group === 'completed' ? 'Shipping to you' : 'In grading'))), /*#__PURE__*/React.createElement("span", {
+  }, tx(gradesReadyFor(order) ? 'Not graded' : order.group === 'completed' ? 'Shipping to you' : 'In grading'))), /*#__PURE__*/React.createElement("span", {
     className: "h-4 w-4 shrink-0 text-muted-foreground"
   }, Icon.chevR)))))));
 }
@@ -2891,10 +3117,13 @@ function ItemsScreen({
 /* ---------- CARD DETAIL ---------- */
 function CardDetail({
   item,
+  order,
   close
 }) {
   const [view, setView] = useStateG(0); // 0 Front · 1 Back · 2 Slab(both)
-  const graded = !!item.grade;
+  const graded = isGraded(item);
+  // Grading is finished for the order but this card never received a grade.
+  const notGraded = !graded && order && gradesReadyFor(order);
   const Front = () => graded ? /*#__PURE__*/React.createElement(Slab, {
     item: item,
     big: true,
@@ -2972,7 +3201,15 @@ function CardDetail({
     className: 'rounded-md px-3 py-1.5 text-xs font-semibold transition-colors ' + (i === view ? 'bg-foreground text-background' : 'bg-secondary text-secondary-foreground')
   }, tx(v)))), /*#__PURE__*/React.createElement("h1", {
     className: "mt-5 text-center text-lg font-bold leading-snug text-foreground"
-  }, tx(item.name)), graded && /*#__PURE__*/React.createElement("div", {
+  }, tx(item.name)), notGraded && /*#__PURE__*/React.createElement("div", {
+    className: "mt-3 rounded-lg border border-border bg-card px-3 py-4 text-center"
+  }, /*#__PURE__*/React.createElement("div", {
+    className: "text-[10px] font-bold uppercase tracking-wider text-muted-foreground"
+  }, tx('Card Grade')), /*#__PURE__*/React.createElement("div", {
+    className: "mt-1 text-[15px] font-bold text-foreground"
+  }, tx('Not graded')), /*#__PURE__*/React.createElement("p", {
+    className: "mt-1 text-[12px] font-medium leading-relaxed text-muted-foreground"
+  }, tx('This card was not graded.'))), graded && /*#__PURE__*/React.createElement("div", {
     className: "mt-3 flex items-stretch justify-center gap-2.5"
   }, /*#__PURE__*/React.createElement("div", {
     className: "flex flex-1 flex-col items-center justify-center gap-1.5 rounded-lg border border-border bg-card px-3 py-4 text-center"
@@ -3006,7 +3243,7 @@ function GradeReveal({
   close,
   onRevealed
 }) {
-  const graded = order.items.filter(i => i.grade);
+  const graded = order.items.filter(isGraded);
   const [idx, setIdx] = useStateG(0);
   const [phase, setPhase] = useStateG('rise'); // rise → ready → slice → open → emerge → reveal
   const timers = React.useRef([]);
@@ -3253,7 +3490,8 @@ function GradeReveal({
     big: true,
     face: "front",
     className: "h-full w-full",
-    radius: 0
+    radius: 0,
+    hideNotes: true
   }), /*#__PURE__*/React.createElement("div", {
     className: "gr-gloss"
   })), /*#__PURE__*/React.createElement("div", {
@@ -3274,33 +3512,18 @@ function GradeReveal({
   })))))), /*#__PURE__*/React.createElement("div", {
     className: "gr-pack"
   }, /*#__PURE__*/React.createElement("div", {
-    className: "gr-body"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "gr-sheen"
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "gr-brand"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "gr-label"
-  }, /*#__PURE__*/React.createElement("img", {
-    className: "gr-logo",
-    src: HX_LOGO,
-    alt: "HobbyX",
-    draggable: false
-  })), /*#__PURE__*/React.createElement("div", {
-    className: "gr-tag"
-  }, tx('Graded'))), /*#__PURE__*/React.createElement("div", {
+    className: "gr-body gr-body-sealed"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "gr-body gr-body-torn"
+  }), /*#__PURE__*/React.createElement("div", {
+    className: "gr-tearoff"
+  }), /*#__PURE__*/React.createElement("div", {
     className: "gr-mouth"
   }), /*#__PURE__*/React.createElement("div", {
     className: "gr-burst"
   }), /*#__PURE__*/React.createElement("div", {
     className: "gr-cutflash"
   }), /*#__PURE__*/React.createElement("div", {
-    className: "gr-crimp"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "gr-crimp-foil"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "gr-crimp-stamp"
-  }, "HOBBYX")), /*#__PURE__*/React.createElement("div", {
     className: "gr-blade"
   }, /*#__PURE__*/React.createElement("div", {
     className: "gr-blade-steel"
@@ -4199,7 +4422,7 @@ const {
 } = React;
 const HX_LOGO = 'assets/hobbyx-logo.png';
 const VOLK_LOGO = 'assets/volk-logo.png';
-const SPLASH_IMG = 'assets/splash-collage.jpg';
+const SPLASH_IMG = 'assets/splash-hobbyx.png';
 const SPLASH_LOGO = 'assets/hobbyx-logo-white.png';
 const emailOk = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test((v || '').trim());
 
@@ -4377,30 +4600,13 @@ function Splash({
     };
   }, []);
   return /*#__PURE__*/React.createElement("div", {
-    className: 'hx-splash' + (leaving ? ' is-leaving' : '')
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "hx-splash-hero"
-  }, /*#__PURE__*/React.createElement("div", {
-    className: "hx-splash-glow"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "hx-splash-ring"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "hx-splash-card"
+    className: 'hx-splash hx-splash--img' + (leaving ? ' is-leaving' : '')
   }, /*#__PURE__*/React.createElement("img", {
+    className: "hx-splash-bg",
     src: SPLASH_IMG,
-    alt: "",
+    alt: "HobbyX",
     draggable: false
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "hx-splash-holo"
-  }))), /*#__PURE__*/React.createElement("div", {
-    className: "hx-splash-brand"
-  }, /*#__PURE__*/React.createElement("img", {
-    className: "hx-splash-logo",
-    src: SPLASH_LOGO,
-    alt: "HobbyX"
-  }), /*#__PURE__*/React.createElement("div", {
-    className: "hx-splash-tag"
-  }, tx('Grading, tracked.'))), showCredit && /*#__PURE__*/React.createElement("div", {
+  }), showCredit && /*#__PURE__*/React.createElement("div", {
     className: "hx-splash-volk"
   }, /*#__PURE__*/React.createElement("span", {
     className: "by"
@@ -5664,6 +5870,7 @@ function GradingApp({
     className: "absolute inset-0 z-30 bg-background"
   }, /*#__PURE__*/React.createElement(CardDetail, {
     item: order.items[card],
+    order: order,
     close: () => setCard(null)
   })), order && /*#__PURE__*/React.createElement(GradeReveal, {
     order: order,
@@ -5677,24 +5884,14 @@ function AuthFlow({
   showCredit,
   offline
 }) {
-  const [route, setRoute] = useRootState('splash');
+  const [route, setRoute] = useRootState('login');
   const go = r => setRoute(r);
-  const splashDone = () => {
-    if (localStorage.getItem('hobbyx_keep') === '1') {
-      onAuthed();
-      return;
-    }
-    setRoute('login');
-  };
   return /*#__PURE__*/React.createElement("div", {
     className: "flex h-full flex-col bg-background"
   }, /*#__PURE__*/React.createElement("div", {
     className: "no-scrollbar relative flex-1 overflow-y-auto"
-  }, route !== 'splash' && /*#__PURE__*/React.createElement(LangToggle, {
+  }, /*#__PURE__*/React.createElement(LangToggle, {
     className: "absolute right-5 top-3 z-10"
-  }), route === 'splash' && /*#__PURE__*/React.createElement(Splash, {
-    onDone: splashDone,
-    showCredit: showCredit
   }), route === 'login' && /*#__PURE__*/React.createElement(Login, {
     go: go,
     onAuthed: onAuthed,
@@ -5751,6 +5948,7 @@ function App() {
   useLang(); // re-render whole tree when language changes
   const [theme, setTheme] = useRootState(() => localStorage.getItem('hobbyx_theme') || 'light');
   const [phase, setPhase] = useRootState('auth'); // auth | app
+  const [booting, setBooting] = useRootState(true); // full-screen splash overlay (covers status bar)
   const [simOffline, setSimOffline] = useRootState(false);
   const realOnline = useOnline();
   const offline = simOffline || !realOnline;
@@ -5770,6 +5968,16 @@ function App() {
     window.addEventListener('resize', fit);
     return () => window.removeEventListener('resize', fit);
   }, []);
+  const bootDone = () => {
+    setBooting(false);
+    if (localStorage.getItem('hobbyx_keep') === '1') {
+      setPhase('app');
+      window.toast(tx('Login successful'), 'success');
+    }
+  };
+  useRootEffect(() => {
+    if (phase === 'auth') setBooting(true);
+  }, [phase]);
   const accentHsl = hexToHsl(t.accent);
   return /*#__PURE__*/React.createElement("div", {
     style: {
@@ -5850,7 +6058,10 @@ function App() {
     skeleton: phase === 'loading'
   })), /*#__PURE__*/React.createElement(Toaster, null), /*#__PURE__*/React.createElement("div", {
     className: "pointer-events-none absolute bottom-2 left-1/2 z-50 h-[5px] w-[135px] -translate-x-1/2 rounded-full bg-foreground/30"
-  })))), /*#__PURE__*/React.createElement(TweaksPanel, null, /*#__PURE__*/React.createElement(TweakSection, {
+  })), booting && /*#__PURE__*/React.createElement(Splash, {
+    onDone: bootDone,
+    showCredit: t.volkCredit
+  }))), /*#__PURE__*/React.createElement(TweaksPanel, null, /*#__PURE__*/React.createElement(TweakSection, {
     label: "Brand"
   }), /*#__PURE__*/React.createElement(TweakToggle, {
     label: "Volk credit (splash)",
