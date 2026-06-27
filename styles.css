@@ -93,21 +93,42 @@
 /* --- pack body: client's experimental silver foil pouch (placeholder art).
    We use the photo's OWN crimp (authentic) and "cut" it by clipping the top
    on open — no separate CSS crimp strip, so nothing can mis-align. --- */
+/* --- pack body: real foil-pouch artwork. Two stacked layers crossfade —
+   the SEALED pack (with its crimped top) becomes the TORN pack (open top)
+   the instant it's cut, while the ripped-off crimp strip flies away. --- */
 .gr-body{
   position:absolute; inset:0; z-index:6;
-  background:url(assets/reveal-packet-v2.png) center/100% 100% no-repeat;
+  background-position:center; background-repeat:no-repeat; background-size:100% 100%;
   /* shadow follows the pouch silhouette (alpha), not a rectangle */
   filter:drop-shadow(0 26px 32px rgba(0,0,0,.62));
-  -webkit-clip-path:inset(0 0 0 0);
-          clip-path:inset(0 0 0 0);
-  transition:-webkit-clip-path .34s cubic-bezier(.4,0,.3,1), clip-path .34s cubic-bezier(.4,0,.3,1);
 }
-.gr-body::before, .gr-body::after{ content:none; }
-/* the cut: slice the crimped top off once opened */
-.gr[data-phase="open"] .gr-body,
-.gr[data-phase="emerge"] .gr-body,
-.gr[data-phase="flip"] .gr-body,
-.gr[data-phase="reveal"] .gr-body{ -webkit-clip-path:inset(8% 0 0 0); clip-path:inset(8% 0 0 0); }
+.gr-body-sealed{ background-image:url(assets/pack.png); opacity:1; transition:opacity .22s ease .04s; }
+.gr-body-torn{ background-image:url(assets/pack-teared.png); opacity:0; transition:opacity .2s ease; }
+.gr[data-phase="open"] .gr-body-sealed,
+.gr[data-phase="emerge"] .gr-body-sealed,
+.gr[data-phase="flip"] .gr-body-sealed,
+.gr[data-phase="reveal"] .gr-body-sealed{ opacity:0; }
+.gr[data-phase="open"] .gr-body-torn,
+.gr[data-phase="emerge"] .gr-body-torn,
+.gr[data-phase="flip"] .gr-body-torn,
+.gr[data-phase="reveal"] .gr-body-torn{ opacity:1; }
+
+/* the crimped top that rips off the moment the pack is cut */
+.gr-tearoff{
+  position:absolute; inset:0; z-index:13; pointer-events:none;
+  background:url(assets/pack-tear-off.png) center/100% 100% no-repeat;
+  opacity:0; transform-origin:50% 26%;
+  filter:drop-shadow(0 8px 11px rgba(0,0,0,.5));
+}
+.gr[data-phase="open"] .gr-tearoff,
+.gr[data-phase="emerge"] .gr-tearoff,
+.gr[data-phase="flip"] .gr-tearoff,
+.gr[data-phase="reveal"] .gr-tearoff{ animation:gr-tearoff-fly .9s cubic-bezier(.4,.1,.5,1) forwards; }
+@keyframes gr-tearoff-fly{
+  0%{   opacity:1; transform:translateY(0) rotate(0) scale(1); }
+  16%{  opacity:1; transform:translateY(-12px) rotate(-3deg); }
+  100%{ opacity:0; transform:translateY(-152px) rotate(-24deg) scale(.9); }
+}
 .gr-sheen{ display:none; }
 
 /* brand lockup hidden — the placeholder pouch is blank; final art arrives later */
@@ -554,6 +575,13 @@
     background:radial-gradient(125% 85% at 50% 40%, #3a2414 0%, #20130a 46%, #100a05 100%);
     transition:opacity .55s ease; }
   .hx-splash.is-leaving{ opacity:0; pointer-events:none; }
+  /* image splash: the full-bleed branded artwork */
+  .hx-splash--img{ background:#0a0a0b; }
+  .hx-splash-bg{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:50% 50%;
+    animation:hxSplashImg 1.15s cubic-bezier(.2,.7,.2,1) both; }
+  @keyframes hxSplashImg{ 0%{ opacity:0; transform:scale(1.06);} 55%{ opacity:1;} 100%{ opacity:1; transform:scale(1);} }
+  .hx-splash--img .hx-splash-volk .by{ color:rgba(255,255,255,.42); }
+  .hx-splash--img .hx-splash-volk .nm{ color:rgba(255,255,255,.8); }
   .hx-splash-hero{ position:relative; display:flex; align-items:center; justify-content:center; }
   .hx-splash-glow{ position:absolute; top:50%; left:50%; width:500px; height:500px; pointer-events:none; opacity:1;
     transform:translate(-50%,-50%);
@@ -588,6 +616,7 @@
   .hx-splash-volk .nm{ font-size:13px; font-weight:800; letter-spacing:-.2px; color:rgba(255,235,214,.84); }
   @keyframes hxFade{ from{ opacity:0; } to{ opacity:1; } }
   @media (prefers-reduced-motion: reduce){
+    .hx-splash-bg{ animation:none !important; opacity:1 !important; transform:none !important; }
     .hx-splash-glow,.hx-splash-card,.hx-splash-holo::before,.hx-splash-logo,.hx-splash-tag,.hx-splash-volk{ animation:none !important; opacity:1 !important; }
     .hx-splash-card{ transform:rotate(-3deg) !important; }
     .hx-splash-logo,.hx-splash-tag{ transform:none !important; }
